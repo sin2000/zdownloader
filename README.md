@@ -30,6 +30,7 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 #### General
 - Linux kernel >= 3.2.0
 - glibc(libc6) >= 2.25
+- OpenSSL >= 1.1.0
 - Qt5 >= 5.13.0  
 I have attached precompiled Qt libs in lib directories (license: GNU LGPL version 3, Qt source code: https://code.qt.io).
 
