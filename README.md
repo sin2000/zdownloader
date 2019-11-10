@@ -36,8 +36,8 @@ I have attached precompiled Qt libs in lib directories (license: GNU LGPL versio
 
 #### Windows
 - you probably need Visual C++ 2017 redistributables x64: https://aka.ms/vs/16/release/vc_redist.x64.exe
-I have attached precompiled Qt libs in win7_8_10-x64 directory. License: GNU LGPL version 3, Qt source code: https://code.qt.io.
-I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org.
+- I have attached precompiled Qt libs in win7_8_10-x64 directory. License: GNU LGPL version 3, Qt source code: https://code.qt.io.
+- I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org.
 
 ## Usage
 **links.txt** file:
