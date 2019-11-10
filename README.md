@@ -99,4 +99,4 @@ Every applog_\*.log file can take about 4MB in size.
 - for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_linux-x86-64_bin.zip)
 - for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_arm-linux-gnueabihf_bin.zip)
 - for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_aarch64-linux-gnu_bin.zip)
-- fro Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/win7_8_10-x64.zip)
+- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/win7_8_10-x64.zip)
