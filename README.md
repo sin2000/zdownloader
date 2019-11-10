@@ -34,6 +34,11 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - Qt5 >= 5.13.0  
 I have attached precompiled Qt libs in lib directories (license: GNU LGPL version 3, Qt source code: https://code.qt.io).
 
+#### Windows
+- you probably need Visual C++ 2017 redistributables x64: https://aka.ms/vs/16/release/vc_redist.x64.exe
+I have attached precompiled Qt libs in win7_8_10-x64 directory. License: GNU LGPL version 3, Qt source code: https://code.qt.io.
+I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org.
+
 ## Usage
 **links.txt** file:
 - create links.txt file in zdownloader directory,
@@ -82,7 +87,8 @@ shutdown_system_on_finish=false
 ```
 
 Zdownloader can power off system on download finish. For that zdownloader uses  
-`sudo shutdown --no-wall -P +2` command which should execute without any passwords.
+- for Linux: `sudo shutdown --no-wall -P +2` command which should execute without any passwords,
+- for Windows: `shutdown /s /t 120` command.
 
 #### applog_\*.log files:
 Zdownloader saves everything from standard output to rotated log files:  
@@ -93,3 +99,4 @@ Every applog_\*.log file can take about 4MB in size.
 - for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_linux-x86-64_bin.zip)
 - for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_arm-linux-gnueabihf_bin.zip)
 - for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/zdownloader_aarch64-linux-gnu_bin.zip)
+- fro Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.0/win7_8_10-x64.zip)
