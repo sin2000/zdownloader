@@ -9,3 +9,4 @@
 - better output messages
 - added ability to download small files by google drive
 - now google drive links like https://drive.google.com/open?id=7B3Uon3LO_we3zF8NVaIEGNJeNAR are recognized as file downloads
+- updated precompiled Qt library to 5.14.0
