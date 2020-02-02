@@ -1,5 +1,6 @@
 ## Changelog
-- 2019-12-26 v1.0 -> v1.1 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
+- 2019-02-02 v1.2 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
+- 2019-12-26 v1.1 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 
 # zdownloader
 Zdownloader is a lightweight download manager running from command line.  
@@ -16,6 +17,7 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - It can resume interrupted downloads.
 - Can check multiple links at a time.
 - It can reconnect after specific time if download speed is too low.
+- It can unpack archive files after download. Supports: rar, 7z and zip.
 
 ## Requirements (for x86-64)
 `ldd zdownloader`:
@@ -36,12 +38,16 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - glibc(libc6) >= 2.25
 - OpenSSL >= 1.1.0
 - Qt5 >= 5.13.0  
-I have attached precompiled Qt libs in lib directories (license: GNU LGPL version 3, Qt source code: https://code.qt.io).
+I have attached precompiled Qt libs in lib directories (license: GNU LGPL version 3, Qt source code: https://code.qt.io)
+- for unpack rar files: unrar >= 5.50
+- for unpack 7z, zip files: 7z >= 16.02
 
 #### Windows
 - you probably need Visual C++ 2017 redistributables x64: https://aka.ms/vs/16/release/vc_redist.x64.exe
 - I have attached precompiled Qt libs in win7_8_10-x64 directory. License: GNU LGPL version 3, Qt source code: https://code.qt.io.
-- I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org.
+- I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org
+- for unpack rar files: WinRar >= 5.50 - https://www.rarlab.com/download.htm
+- for unpack 7z, zip files: 7-zip >= 16.02 - https://www.7-zip.org/download.html
 
 ## Usage
 **links.txt** file:
@@ -68,13 +74,33 @@ https://megaup.net/3Pwaa/something.rar #comment: example link
 - download_list.txt file is created after links checks,
 - download list has format:
 ```
-P file_name URL
+file_name URL group_id
 ```
 Three fields separated by tab character.  
-First field contains P or F character which is Pending or Finished.  
+Group_id contains group number - is used for unpack archives.  
 - You can edit(eg. change order) download_list.txt when zdownloader is not running,
 - If remote file does not exists then zdownloader skips that file.
 
+### finished_downloads_\*.txt files:
+- contains timestamp, download status, file name and URL,
+- download_status can be:  
+F (download finished with success),  
+X (skipped download, file already exists on disk),  
+R (skipped download, remote file does not exists)
+
+### Unpack
+Default value for unrar_binary setting:  
+- Linux: `unrar`, Windows: `C:\Program Files\WinRAR\UnRar.exe`
+
+Default value for 7z_binary setting:  
+- Linux: `7z`, Windows: `C:\Program Files\7-zip\7z.exe`
+
+Executing parameters:
+- rar: `unrar x -parchive_pwd -ai -y -c- -o+ archive_filename archive_dir/`
+- 7z: `7z x -parchive_pwd -aoa -y -oarchive_dir/ archive_filename`  
+where `archive_dir` is file name without extension.
+
+### Start and stop
 You can run zdownloader by  
 `./start_zd.sh`  
 from zdownloader directory.
@@ -89,6 +115,7 @@ To stop zdownloader press Ctrl-C or send SIGINT or SIGTERM signal.
 ; download_directory
 ; if directory contains spaces then enclose it in quotation marks
 ; set empty or '.' for current directory
+; on Windows use slash or double backslash as dir separators
 download_directory=/media/downloads
 user_agent_for_https_connections="Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0"
 ; shutdown_system_on_finish
@@ -99,6 +126,7 @@ shutdown_system_on_finish=false
 max_seconds_before_reset_inactive_connection=45
 ; download_lists_directory
 ; program will read file 'download_list.txt' from download_lists_directory
+; program will save file 'finished_downloads_*.txt' in download_lists_directory
 download_lists_directory=
 ; links_file_directory
 ; program will read file 'links.txt' from links_file_directory
@@ -115,7 +143,7 @@ max_parallel_file_downloads=1
 max_segments_per_file=2
 ; min_segment_size_mb
 ; integer value. Do not change min_segment_size_mb when you have unfinished downloads
-min_segment_size_mb=4
+min_segment_size_mb=3
 ; segment_network_read_buffer_kb
 ; integer value. Download read buffer(in RAM) size per one segment in KBytes.
 ; Appication will try to stop reading from the network once this buffer is full, thus causing the download to throttle down as well.
@@ -158,6 +186,42 @@ timestamp_format="yyyyMMdd.hh:mm:ss"
 ; integer value in KBytes
 log_max_rotate_kb=4096
 log_max_archive_files=3
+
+[FinishedDownloads]
+; log_to_file_enabled
+; enable or disable log finished items to finished_downloads_*.txt files.
+log_to_file_enabled=true
+; timestamp_format
+; format details: https://doc.qt.io/archives/qt-5.13/qdatetime.html#toString
+timestamp_format="yyyyMMdd.hh:mm:ss"
+; log_max_rotate_kb
+; integer value in KBytes
+log_max_rotate_kb=4096
+log_max_archive_files=3
+
+[Unpack]
+; unpack_after_download
+; enable/disable unpack archive files after download all item in group
+unpack_after_download=true
+; pause_download_before_unpack
+pause_download_before_unpack=false
+; delete_archive_files_after_unpack
+; true - remove archive files after successful unpack
+delete_archive_files_after_unpack=true
+; unrar_binary
+; path to unrar/rar binary, eg. "/usr/bin/unrar". Leave empty for default value.
+unrar_binary=
+; 7z_binary
+; path to 7zip binary, eg. "/usr/bin/7z". Leave empty for default value.
+7z_binary=
+
+[UnpackPasswords]
+; set passwords for unpack - update size if you add/remove password
+; you can set passwords here even if archive file is not locked by password
+1\pass=mypass
+;2\pass=mypass2
+;3\pass=mypass3
+size=1
 ```
 
 Zdownloader can power off system on download finish. For that zdownloader uses  
