@@ -1,6 +1,5 @@
 # Changelog
 ### Changes in v1.2 (2020-02-02):
-Changes in v1.2 (2020-02-02)
 - added: unpack rar, 7z and zip files after download with multi-password support
 - added finished_downloads_\*.txt files that contains only finished or skipped downloads
 - download_list.txt now have only pending downloads items and group_id in last column
