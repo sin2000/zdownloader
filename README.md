@@ -100,6 +100,8 @@ Executing parameters:
 - 7z: `7z x -parchive_pwd -aoa -y -oarchive_dir/ archive_filename`  
 where `archive_dir` is file name without extension.
 
+While the unpack is running, `download_queue.txt` file is created in the current directory.
+
 ### Start and stop
 You can run zdownloader by  
 `./start_zd.sh`  
