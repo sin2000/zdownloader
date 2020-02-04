@@ -1,4 +1,7 @@
 # Changelog
+### Changes in v1.3 (2020-02-04):
+- changed: zippyshare link extractor algorithm
+
 ### Changes in v1.2 (2020-02-02):
 - added: unpack rar, 7z and zip files after download with multi-password support
 - added finished_downloads_\*.txt files that contains only finished or skipped downloads
