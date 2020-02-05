@@ -1,6 +1,6 @@
 ## Changelog
-- 2019-02-04 v1.3 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2019-02-02 v1.2 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
+- 2020-02-04 v1.3 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
+- 2020-02-02 v1.2 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 - 2019-12-26 v1.1 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 
 # zdownloader
