@@ -1,4 +1,8 @@
 # Changelog
+### Changes in v1.4 (2020-02-06):
+- fixed: sometimes crash after download (regression from version v1.2 - use pointer after free)
+- change: do not shedule system shutdown in certain situation when user/system stops application
+
 ### Changes in v1.3 (2020-02-04):
 - changed: zippyshare link extractor algorithm
 
