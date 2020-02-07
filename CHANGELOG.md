@@ -1,4 +1,7 @@
 # Changelog
+### Changes in v1.6 (2020-02-07):
+- added: network proxy support (socks5, http)
+
 ### Changes in v1.5 (2020-02-07):
 - fixed: sometimes crash after download (regression from version v1.2 - use pointer after free). This is second one since v1.2(sic!) but should be last one
 
