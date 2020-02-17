@@ -1,4 +1,5 @@
 ## Changelog
+- 2020-02-17 v1.7 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 - 2020-02-07 v1.6 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 - 2020-02-07 v1.5 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 - 2020-02-06 v1.4 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
@@ -257,7 +258,7 @@ Zdownloader can save everything from standard output to rotated log files:
 `applog_1.log ...`
 
 ## Download:
-- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.6/linux-x86-64.zip)
-- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.6/arm-linux-gnueabihf.zip)
-- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.6/aarch64-linux-gnu.zip)
-- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.6/win7_8_10-x64.zip)
+- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.7/linux-x86-64.zip)
+- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.7/arm-linux-gnueabihf.zip)
+- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.7/aarch64-linux-gnu.zip)
+- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.7/win7_8_10-x64.zip)
