@@ -1,4 +1,7 @@
 # Changelog
+### Changes in v1.7 (2020-02-17):
+- changed: zippyshare link extractor algorithm
+
 ### Changes in v1.6 (2020-02-07):
 - added: network proxy support (socks5, http)
 
