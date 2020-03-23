@@ -1,4 +1,10 @@
 # Changelog
+### Changes in v1.8 (2020-03-23):
+- changed: zippyshare link extractor algorithm
+- changed: skipping links in link checker when link is invalid(for example: is already on download list)
+- added: micro scheduler - see zdownloader.ini file
+- fixed: in very rarely cases download file can be corrupted when server returns other content than file bytes
+
 ### Changes in v1.7 (2020-02-17):
 - changed: zippyshare link extractor algorithm
 
