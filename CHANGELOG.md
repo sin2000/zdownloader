@@ -1,4 +1,8 @@
 # Changelog
+### Changes in v1.9 (2020-04-08):
+- added: bypass gdrive download limit by using google drive api (see [readme](https://github.com/sin2000/zdownloader/blob/master/README.md) and [service account howto](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md))
+- fixed: the program will crash when user stops it(Ctrl-C/SIGINT) immediately after starting it(after 'Loading state')
+
 ### Changes in v1.8 (2020-03-23):
 - changed: zippyshare link extractor algorithm
 - changed: skipping links in link checker when link is invalid(for example: is already on download list)
