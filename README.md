@@ -1,12 +1,6 @@
 ## Changelog
+- 2020-04-08 v1.9 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 - 2020-03-23 v1.8 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-17 v1.7 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-07 v1.6 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-07 v1.5 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-06 v1.4 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-04 v1.3 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-02-02 v1.2 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2019-12-26 v1.1 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
 
 # zdownloader
 Zdownloader is a lightweight download manager running from command line.  
@@ -25,10 +19,12 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - It can reconnect after specific time if download speed is too low.
 - It can unpack archive files after download. Supports: rar, 7z and zip.
 - Supports network proxies.
+- Allows you to download google drive files even if the daily limit of download has excedeed using google drive REST API v3.
 
 ## Requirements (for x86-64)
 `ldd zdownloader`:
 - linux-vdso.so.1
+- libbotan-2.so.13
 - libQt5Network.so.5 
 - libQt5Core.so.5
 - libpthread.so.0
@@ -46,6 +42,8 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - OpenSSL >= 1.1.0
 - Qt5 >= 5.13.0  
 I have attached precompiled Qt libs in lib directories (license: GNU LGPL version 3, Qt source code: https://code.qt.io)
+- Botan >= 2.14 - needed for JWT sign in gdrive api  
+I have attached precompiled Botan library in lib directory (https://botan.randombit.net)
 - for unpack rar files: unrar >= 5.50
 - for unpack 7z, zip files: 7z >= 16.02
 
@@ -94,6 +92,17 @@ Group_id contains group number - is used for unpack archives.
 F (download finished with success),  
 X (skipped download, file already exists on disk),  
 R (skipped download, remote file does not exists)
+
+### How gdrive download limit bypass works?
+- Zdownloader can download google drive files even if the daily limit of download has excedeed. For that zdownloader can use google drive REST API v3.
+- Before you start see how to enable and create service account: [LINK](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md)
+1. By default gdrive api(from google service account) do not have access to your main files in your google drive. But share same free space.
+2. At first step zdownloader list all files on gdrive.
+3. Next zdownloader deletes all found files.
+4. Copy one file to your gdrive and download.  
+
+When using gdrive api you can download one gdrive file at a time(but you can use many segments and other services like zippyshare).
+
 
 ### Unpack
 Default value for unrar_binary setting:  
@@ -248,6 +257,16 @@ port=8889
 ; username/password authentication
 username=
 password=
+
+[GDrive]
+; use_gdrive_api
+; set use_gdrive_api=true to bypass gdrive download limit
+; requirements: google account, enabled gdrive api, google service account
+use_gdrive_api=false
+; google_service_account_json_file
+; path to json file with google service account credentials,
+; most important fields in json file: client_email and private_key
+google_service_account_json_file=./gdrive.json
 ```
 
 Zdownloader can power off system on download finish. For that zdownloader uses  
@@ -259,7 +278,7 @@ Zdownloader can save everything from standard output to rotated log files:
 `applog_1.log ...`
 
 ## Download:
-- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.8/linux-x86-64.zip)
-- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.8/arm-linux-gnueabihf.zip)
-- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.8/aarch64-linux-gnu.zip)
-- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.8/win7_8_10-x64.zip)
+- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/linux-x86-64.zip)
+- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/arm-linux-gnueabihf.zip)
+- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/aarch64-linux-gnu.zip)
+- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/win7_8_10-x64.zip)
