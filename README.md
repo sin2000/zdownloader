@@ -19,7 +19,7 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - It can reconnect after specific time if download speed is too low.
 - It can unpack archive files after download. Supports: rar, 7z and zip.
 - Supports network proxies.
-- Allows you to download google drive files even if the daily limit of download has excedeed using google drive REST API v3.
+- Allows you to download google drive files even if the daily limit of download has exceeded using google drive REST API v3.
 
 ## Requirements (for x86-64)
 `ldd zdownloader`:
