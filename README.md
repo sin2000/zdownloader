@@ -94,12 +94,12 @@ X (skipped download, file already exists on disk),
 R (skipped download, remote file does not exists)
 
 ### How gdrive download limit bypass works?
-- Zdownloader can download google drive files even if the daily limit of download has excedeed. For that zdownloader can use google drive REST API v3.
+- Zdownloader can download google drive files even if the daily limit of download has exceeded. For that zdownloader can use google drive REST API v3.
 - Before you start see how to enable and create service account: [LINK](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md)
 1. By default gdrive api(from google service account) do not have access to your main files in your google drive. But share same free space.
 2. At first step zdownloader list all files on gdrive.
 3. Next zdownloader deletes all found files.
-4. Copy one file to your gdrive and download.  
+4. At last step the application copies the file to your gdrive and download it. 
 
 When using gdrive api you can download one gdrive file at a time(but you can use many segments and other services like zippyshare).
 
@@ -164,7 +164,7 @@ max_segments_per_file=2
 min_segment_size_mb=3
 ; segment_network_read_buffer_kb
 ; integer value. Download read buffer(in RAM) size per one segment in KBytes.
-; Appication will try to stop reading from the network once this buffer is full, thus causing the download to throttle down as well.
+; Application will try to stop reading from the network once this buffer is full, thus causing the download to throttle down as well.
 ; This can happen when your system is not capable to download with full speed.
 segment_network_read_buffer_kb=2048
 ; segment_file_write_buffer_kb
@@ -194,7 +194,7 @@ min_avg_speed_before_reconnect_mbps=13
 
 [OutputMessages]
 ; log_to_file_enabled
-; enable or disable applog_*.log files. Applog contains all output messsages.
+; enable or disable applog_*.log files. Applog contains all output messages.
 log_to_file_enabled=true
 log_directory=
 ; timestamp_format
