@@ -282,3 +282,4 @@ Zdownloader can save everything from standard output to rotated log files:
 - for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/arm-linux-gnueabihf.zip)
 - for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/aarch64-linux-gnu.zip)
 - for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/win7_8_10-x64.zip)
+- for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/win7_8_10-x86.zip)
