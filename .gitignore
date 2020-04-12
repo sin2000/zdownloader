@@ -10,8 +10,6 @@
 *.obj
 *.orig
 *.rej
-*.so
-*.so.*
 *_pch.h.cpp
 *_resource.rc
 *.qm
@@ -37,6 +35,7 @@ Thumbs.db
 
 # qtcreator generated files
 *.pro.user*
+moc_predefs.h
 
 # xemacs temporary files
 *.flc
@@ -68,6 +67,7 @@ Thumbs.db
 
 # Binaries
 # --------
-*.dll
 *.exe
 
+bin_debug/
+bin_release/
