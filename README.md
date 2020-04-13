@@ -96,7 +96,7 @@ R (skipped download, remote file does not exists)
 ### How gdrive download limit bypass works?
 - Zdownloader can download google drive files even if the daily limit of download has exceeded. For that zdownloader can use google drive REST API v3.
 - Before you start see how to enable and create service account: [LINK](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md)
-1. By default gdrive api(from google service account) do not have access to your main files in your google drive. But share same free space.
+1. The Google Drive API(on Google Service Account) gives 3rd party applications an option to store their own data on Google Drive, but sandboxed from the user main file storage area. Hence zdownloader cannot read, modify or delete your Google Drive data. A user space allocation (default 15GB) is shared between all applications that store data in their Google Account - Drive, Gmail, Google Photos and 3rd party apps like zdownloader.
 2. At first step zdownloader list all files on gdrive.
 3. Next zdownloader deletes all found files.
 4. At last step the application copies the file to your gdrive and download it. 
