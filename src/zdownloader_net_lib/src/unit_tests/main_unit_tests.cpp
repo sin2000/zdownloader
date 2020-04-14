@@ -5,6 +5,7 @@
 #include "http/segment_calculator_tests.h"
 #include "utils/jwt_tests.h"
 #include "http/gdrive/gdrive_api_tests.h"
+#include "http/gdrive/gdrive_service_tests.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +41,11 @@ int main(int argc, char *argv[])
 //    gdrive_api_tests tc;
 //    status |= QTest::qExec(&tc, argc, argv);
 //  }
+
+    {
+      gdrive_service_tests tc;
+      status |= QTest::qExec(&tc, argc, argv);
+    }
 
   return status;
 }
