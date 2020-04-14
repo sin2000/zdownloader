@@ -1,6 +1,7 @@
 #include "downloadable_items.h"
 #include "download_item.h"
 #include "../settings/finished_downloads_settings.h"
+#include "../utils/archive_filename_comparator.h"
 #include <zd_logger.h>
 #include <QFile>
 #include <QDateTime>
@@ -46,19 +47,30 @@ void downloadable_items::load_state(const finished_downloads_settings & fin_set)
 void downloadable_items::sort_and_add(const QList<download_item> & items)
 {
   QList<download_item> sorted_items = items;
-  if(max_group_id == std::numeric_limits<int>().max())
-    max_group_id = 0;
-
-  const int gid = ++max_group_id;
-  for(auto & info : sorted_items)
-  {
-    info.set_group_id(gid);
-  }
-
   std::sort(sorted_items.begin(), sorted_items.end(), [](const download_item & x, const download_item & y)
   {
     return x.get_filename() < y.get_filename();
   });
+
+  if(max_group_id == std::numeric_limits<int>().max())
+    max_group_id = 0;
+
+  archive_filename_comparator archive_cmp;
+  int curr_gid = ++max_group_id;
+  for(int i = 0; i < sorted_items.size(); ++i)
+  {
+    download_item & curr_fi = sorted_items[i];
+    QString prev_fn;
+    if(i > 0)
+      prev_fn = sorted_items.at(i - 1).get_filename();
+    else
+      prev_fn = curr_fi.get_filename();
+
+    if(archive_cmp.compare(prev_fn, curr_fi.get_filename()) == false)
+      curr_gid = ++max_group_id;
+
+    curr_fi.set_group_id(curr_gid);
+  }
 
   link_map.reserve(link_map.size() + sorted_items.size());
 

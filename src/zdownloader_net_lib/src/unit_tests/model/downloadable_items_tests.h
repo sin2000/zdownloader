@@ -15,29 +15,32 @@ private slots:
 //    dl_items.load_from_file();
 //  }
 
-//  void sort_and_add_behaves_correctly()
-//  {
-//    download_item item, item2;
-//    item.set_status_from_char('P');
-//    item.filename = "dodany01.rar";
-//    item.link = "link-do-serwisu";
-//    item2.set_status_from_char('P');
-//    item2.filename = "dodany02.rar";
-//    item2.link = "link-do-serw2";
+  void sort_and_add_behaves_correctly()
+  {
+    download_item item, item2, item3;
+    item.set_status_from_char('P');
+    item2.set_status_from_char('P');
+    item3.set_status_from_char('P');
+    item.set_link("a");
+    item2.set_link("b");
+    item3.set_link("c");
+    item.set_filename("Game.Overlay.Renderer64.part01.rar");
+    item2.set_filename("Game.Overlay.Renderer64.part02.rar");
+    item3.set_filename("Something.part01.rar");
 
-//    const QList<download_item> items = { item2, item };
+    const QList<download_item> items = { item2, item, item3 };
 
-//    downloadable_items dl_items;
-//    dl_items.sort_and_add(items);
+    downloadable_items dl_items;
+    dl_items.sort_and_add(items);
 
-//    download_item cur_item;
-//    const bool cur_item_success = dl_items.get_first(&cur_item);
+    download_item * cur_item1 = dl_items.get_next();
+    download_item * cur_item2 = dl_items.get_next();
+    download_item * cur_item3 = dl_items.get_next();
 
-//    QCOMPARE(cur_item_success, true);
-//    QCOMPARE(cur_item.filename, QString("aaa.part02.rar"));
-//    QCOMPARE(cur_item.link, QString("https://www41.zippyshare.com/v/pierwszy/file.html"));
-//    QCOMPARE(cur_item.status, download_item::download_status_pending);
-//  }
+    QCOMPARE(cur_item1->get_group_id(), 1);
+    QCOMPARE(cur_item2->get_group_id(), 1);
+    QCOMPARE(cur_item3->get_group_id(), 2);
+  }
 
 //  void remove_first_behaves_correctly()
 //  {
