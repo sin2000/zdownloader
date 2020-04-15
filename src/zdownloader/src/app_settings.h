@@ -8,6 +8,7 @@
 #include "settings/unpack_settings.h"
 #include "settings/net_proxy_settings.h"
 #include "settings/scheduler_settings.h"
+#include "settings/unpacklog_settings.h"
 #include <settings/finished_downloads_settings.h>
 #include <settings/gdrive_settings.h>
 
@@ -29,6 +30,7 @@ public:
   net_proxy_settings net_proxy;
   scheduler_settings scheduler;
   gdrive_settings gdrive;
+  unpacklog_settings unpacklog;
 
 private:
   void load_general_settings(QSettings * s);
@@ -40,6 +42,7 @@ private:
   void load_net_proxy_settings(QSettings * s);
   void load_scheduler_settings(QSettings * s);
   void load_gdrive_settings(QSettings * s);
+  void load_upacklog_settings(QSettings * s);
 };
 
 #endif // APP_SETTINGS_H
