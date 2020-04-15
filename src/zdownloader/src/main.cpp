@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   sigwatch->watch_for_signal(SIGTERM);
   sigwatch->watch_for_signal(SIGUSR1);
   sigwatch->watch_for_signal(SIGUSR2);
+  sigwatch->watch_for_signal(SIGHUP);
   QObject::connect(sigwatch, &unix_sigwatch::unix_signal, runner, &cmd_runner::unix_signal_received);
 #else
   win_sigwatch * sigwatch = new win_sigwatch(app);
