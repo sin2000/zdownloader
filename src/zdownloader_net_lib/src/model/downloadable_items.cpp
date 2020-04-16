@@ -60,14 +60,12 @@ void downloadable_items::sort_and_add(const QList<download_item> & items)
   for(int i = 0; i < sorted_items.size(); ++i)
   {
     download_item & curr_fi = sorted_items[i];
-    QString prev_fn;
     if(i > 0)
-      prev_fn = sorted_items.at(i - 1).get_filename();
-    else
-      prev_fn = curr_fi.get_filename();
-
-    if(archive_cmp.compare(prev_fn, curr_fi.get_filename()) == false)
-      curr_gid = ++max_group_id;
+    {
+      const QString prev_fn = sorted_items.at(i - 1).get_filename();
+      if(archive_cmp.compare(prev_fn, curr_fi.get_filename()) == false)
+        curr_gid = ++max_group_id;
+    }
 
     curr_fi.set_group_id(curr_gid);
   }
