@@ -70,7 +70,7 @@ private:
   QQueue<QString> unpack_queue;
   QProcess * unpack_process;
   QString last_text;
-  QString curr_archive_filename;
+  QString curr_generic_archive_filename;
   QString remove_filename_filter;
   QString working_dir;
   unpack_program current_unpack_app;

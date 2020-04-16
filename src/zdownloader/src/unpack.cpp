@@ -173,7 +173,6 @@ bool unpack::has_fatal_error_occured() const
 
 bool unpack::setup_unpack_process(const QString & filename)
 {
-  curr_archive_filename = filename;
   QString archive_filepath;
   QString archive_dir;
   QString archive_pwd = unpack_prefs.passwords.value(0, "-");
@@ -196,6 +195,7 @@ bool unpack::setup_unpack_process(const QString & filename)
       remove_filename_filter = escape_name_filter(archive_filepath);
     }
 
+    curr_generic_archive_filename = archive_filepath;
     archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
     set_unrar_program(QStringList{"x", "-p" + archive_pwd, "-ai", "-y", "-c-", "-o+", archive_filepath, archive_dir + "/"});
@@ -218,6 +218,7 @@ bool unpack::setup_unpack_process(const QString & filename)
       remove_filename_filter = escape_name_filter(archive_filepath);
     }
 
+    curr_generic_archive_filename = archive_filepath;
     archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
     set_7z_program(QStringList{"x", "-p" + archive_pwd, "-aoa", "-y", "-o"+ archive_dir + "/", archive_filepath});
@@ -267,7 +268,7 @@ void unpack::set_7z_program(const QStringList & prog_args)
 
 void unpack::start_unpack_process()
 {
-  qDebug() << "UNPACK started: " + curr_archive_filename;
+  qDebug() << "UNPACK started: " + curr_generic_archive_filename;
   if(unpack_logger)
     unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(),
                                    "================================================================================\n"
