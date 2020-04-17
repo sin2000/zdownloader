@@ -30,8 +30,10 @@ public:
   void stop(const download_item * item);
   bool contains_link(const QString & link) const;
   QList<const download_item *> get_segmented_items() const;
-  void set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends);
+  void set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends, qint64 remaining_bytes);
   void set_download_lists_directory(const QString & dir_path);
+  qint64 get_sum_of_remaining_bytes() const;
+  int get_all_items_count() const;
 
 private:
   void load_from_file();

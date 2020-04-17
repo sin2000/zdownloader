@@ -1,6 +1,7 @@
 #include "downloadable_items.h"
 #include "download_item.h"
 #include "../settings/finished_downloads_settings.h"
+#include "../utils/archive_filename_comparator.h"
 #include <zd_logger.h>
 #include <QFile>
 #include <QDateTime>
@@ -46,19 +47,28 @@ void downloadable_items::load_state(const finished_downloads_settings & fin_set)
 void downloadable_items::sort_and_add(const QList<download_item> & items)
 {
   QList<download_item> sorted_items = items;
-  if(max_group_id == std::numeric_limits<int>().max())
-    max_group_id = 0;
-
-  const int gid = ++max_group_id;
-  for(auto & info : sorted_items)
-  {
-    info.set_group_id(gid);
-  }
-
   std::sort(sorted_items.begin(), sorted_items.end(), [](const download_item & x, const download_item & y)
   {
     return x.get_filename() < y.get_filename();
   });
+
+  if(max_group_id == std::numeric_limits<int>().max())
+    max_group_id = 0;
+
+  archive_filename_comparator archive_cmp;
+  int curr_gid = ++max_group_id;
+  for(int i = 0; i < sorted_items.size(); ++i)
+  {
+    download_item & curr_fi = sorted_items[i];
+    if(i > 0)
+    {
+      const QString prev_fn = sorted_items.at(i - 1).get_filename();
+      if(archive_cmp.compare(prev_fn, curr_fi.get_filename()) == false)
+        curr_gid = ++max_group_id;
+    }
+
+    curr_fi.set_group_id(curr_gid);
+  }
 
   link_map.reserve(link_map.size() + sorted_items.size());
 
@@ -223,12 +233,13 @@ QList<const download_item *> downloadable_items::get_segmented_items() const
   return segmented_items;
 }
 
-void downloadable_items::set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends)
+void downloadable_items::set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends, qint64 remaining_bytes)
 {
   auto it = filename_map.find(filename);
   if(it != filename_map.end())
   {
     it.value()->set_segment_ends(seg_ends);
+    it.value()->set_remaining_bytes(remaining_bytes);
   }
 }
 
@@ -236,6 +247,24 @@ void downloadable_items::set_download_lists_directory(const QString & dir_path)
 {
   download_lists_directory = dir_path;
   download_list_file_path = download_lists_directory + "/" + pending_download_list_filename;
+}
+
+qint64 downloadable_items::get_sum_of_remaining_bytes() const
+{
+  qint64 sum = 0;
+  for(const auto item : all_items)
+  {
+    const qint64 bytes = item->get_remaining_bytes();
+    if(bytes > 0)
+      sum += bytes;
+  }
+
+  return sum;
+}
+
+int downloadable_items::get_all_items_count() const
+{
+  return all_items.size();
 }
 
 void downloadable_items::load_from_file()
@@ -278,22 +307,24 @@ void downloadable_items::parse_file_content(const QString & content, QList<downl
   const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
   parsed_content->reserve(lines.size());
 
+  const int max_columns = 4;
   for(int i = 0; i < lines.size(); ++i)
   {
     const QString trimmed_line = lines.at(i).trimmed();
     const QStringList words = trimmed_line.split(QChar::Tabulation, QString::SkipEmptyParts);
-    if(words.size() == 3)
+    if(words.size() == max_columns)
     {
       download_item dl_item;
       dl_item.set_filename(words.at(0));
       dl_item.set_link(words.at(1));
       dl_item.set_group_id(words.at(2).toInt());
+      dl_item.set_file_size_bytes(words.at(3).toLongLong());
 
       parsed_content->append(dl_item);
     }
     else
     {
-      qDebug() << "File:" << download_list_file_path << "line" << i + 1 << "should contain 3 words";
+      qDebug() << "File:" << download_list_file_path << "line" << i + 1 << "should contain" << max_columns << "words";
     }
   }
 }

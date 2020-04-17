@@ -89,7 +89,7 @@ QString text_file_logger::format_log_text(qint64 timestamp_msecs, const QString 
   tmp.remove(QChar::CarriageReturn);
   const QStringList line_list = tmp.split(QChar::LineFeed, QString::SkipEmptyParts);
   if(line_list.size() > 1)
-    out_text = line_list.join(QChar::LineFeed + QString(prefix.size() + 1, QChar::Space));
+    out_text = line_list.join(QChar::LineFeed + QString(prefix.size(), QChar::Space));
   else
     out_text = tmp;
 

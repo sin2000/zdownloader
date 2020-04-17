@@ -101,5 +101,5 @@ void zippy_service::get_head_success(head_downloader * sender)
 
 void zippy_service::get_head_error_occured(head_downloader * /*sender*/, QNetworkReply::NetworkError /*err_code*/, const QString & err_text)
 {
-  emit fetch_download_info_error(err_text, service::unknown_error, this);
+  emit fetch_download_info_error(err_text, service::network_error, this);
 }

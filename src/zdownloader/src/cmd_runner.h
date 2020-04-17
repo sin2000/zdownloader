@@ -21,6 +21,7 @@ private:
   void zdown_net_init_finished();
   void reload_settings();
   bool apply_settings();
+  bool apply_unpacklog_settings();
   bool apply_scheduler_settings();
   bool apply_gdrive_settings();
   void set_application_proxy(const net_proxy_settings & proxy_prefs);

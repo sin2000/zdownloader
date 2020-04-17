@@ -218,6 +218,9 @@ bool cmd_runner::apply_settings()
   qDebug() << "UnpackPasswords:"
            << "\n" << app_set->unpack.passwords;
 
+  if(apply_unpacklog_settings() == false)
+    return false;
+
   qDebug() << "NetworkProxy:"
            << "\n" << "enable_network_proxy:" << app_set->net_proxy.enable_network_proxy
            << "\n" << "proxy_type:" << ((app_set->net_proxy.proxy_type == QNetworkProxy::Socks5Proxy) ? QString("socks5") : QString("http"))
@@ -239,6 +242,30 @@ bool cmd_runner::apply_settings()
   unpack_mod->set_settings(app_set->unpack);
   unpack_mod->set_working_directory(app_set->general.download_directory);
   set_application_proxy(app_set->net_proxy);
+
+  return true;
+}
+
+bool cmd_runner::apply_unpacklog_settings()
+{
+  const QString val_msg = app_set->unpacklog.validate();
+  if(val_msg.isEmpty() == false)
+  {
+    qDebug() << "UnpackLog settings error:";
+    qDebug() << val_msg;
+    return false;
+  }
+  if(app_set->unpacklog.log_to_file_enabled)
+  {
+    qDebug() << "UnpackLog:"
+             << "\n" << "log_to_file_enabled:" << app_set->unpacklog.log_to_file_enabled
+             << "\n" << "log_directory:" << app_set->unpacklog.log_directory
+             << "\n" << "timestamp_format:" << app_set->unpacklog.timestamp_format
+             << "\n" << "log_max_rotate_kb:" << app_set->unpacklog.log_max_rotate_kb
+             << "\n" << "log_max_archive_files:" << app_set->unpacklog.log_max_archive_files;
+
+    unpack_mod->set_log_settings(app_set->unpacklog);
+  }
 
   return true;
 }
@@ -376,6 +403,8 @@ void cmd_runner::download_finished(const QString & /*error_text*/)
 
   if(unpack_mod->is_queue_empty() || unpack_mod->has_fatal_error_occured())
     exit_app(true);
+  else
+    qDebug() << "UNPACK: in progress...";
 }
 
 void cmd_runner::downloader_last_item_in_group_finished(const QString & filename)

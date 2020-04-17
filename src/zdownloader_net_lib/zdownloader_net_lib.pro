@@ -69,6 +69,7 @@ SOURCES += \
     src/model/segment_metadata.cpp \
     src/settings/finished_downloads_settings.cpp \
     src/settings/gdrive_settings.cpp \
+    src/utils/archive_filename_comparator.cpp \
     src/utils/jwt.cpp \
     src/zdownloader_net_lib.cpp \
     src/http/web_config.cpp \
@@ -109,6 +110,7 @@ HEADERS += \
     src/model/segment_metadata.h \
     src/settings/finished_downloads_settings.h \
     src/settings/gdrive_settings.h \
+    src/utils/archive_filename_comparator.h \
     src/utils/jwt.h \
     src/zdownloader_net_lib.h \
     src/zdownloader_net_lib_global.h \

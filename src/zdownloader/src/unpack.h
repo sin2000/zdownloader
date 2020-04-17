@@ -2,16 +2,21 @@
 #define UNPACK_H
 
 #include "settings/unpack_settings.h"
+#include "settings/unpacklog_settings.h"
 #include <QQueue>
 #include <QProcess>
 #include <QObject>
+
+class text_file_logger;
 
 class unpack : public QObject
 {
   Q_OBJECT
 public:
   unpack(QObject * parent = nullptr);
+  ~unpack();
   void set_settings(const unpack_settings & settings);
+  void set_log_settings(const unpacklog_settings & log_settings);
   void set_working_directory(const QString & dir);
   void add_to_queue(const QString & filename);
   void load_queue();
@@ -61,9 +66,11 @@ private:
 
   const QString unpack_queue_filename = "./unpack_queue.txt";
   unpack_settings unpack_prefs;
+  unpacklog_settings log_prefs;
   QQueue<QString> unpack_queue;
   QProcess * unpack_process;
   QString last_text;
+  QString curr_generic_archive_filename;
   QString remove_filename_filter;
   QString working_dir;
   unpack_program current_unpack_app;
@@ -71,6 +78,8 @@ private:
   bool is_shutdown;
   bool is_running;
   bool fatal_error_occured;
+  const QString unpacklog_base_filename = "unpacklog";
+  text_file_logger * unpack_logger;
 };
 
 #endif // UNPACK_H

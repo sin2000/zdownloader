@@ -1,6 +1,8 @@
 #include "unpack.h"
 #include <meta_object_ext.h>
 #include <string_utils.h>
+#include <zd_logger.h>
+#include <QDateTime>
 #include <QFile>
 #include <QThread>
 #include <QFileInfo>
@@ -16,16 +18,38 @@ unpack::unpack(QObject * parent)
    unpack_pwd_idx(0),
    is_shutdown(false),
    is_running(false),
-   fatal_error_occured(false)
+   fatal_error_occured(false),
+   unpack_logger(nullptr)
 {
   connect(unpack_process, &QProcess::errorOccurred, this, &unpack::process_error);
   connect(unpack_process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &unpack::process_finished);
   connect(unpack_process, &QProcess::readyReadStandardOutput, this, &unpack::read_std_output);
 }
 
+unpack::~unpack()
+{
+  if(unpack_logger)
+  {
+    unpack_logger->invoke_disable(false);
+    zd_logger::inst().text_log_mgr->remove_object(unpacklog_base_filename);
+  }
+}
+
 void unpack::set_settings(const unpack_settings & settings)
 {
   unpack_prefs = settings;
+}
+
+void unpack::set_log_settings(const unpacklog_settings & log_settings)
+{
+  log_prefs = log_settings;
+  if(log_prefs.log_to_file_enabled && unpack_logger == nullptr)
+  {
+    unpack_logger = zd_logger::inst().text_log_mgr->add_object(unpacklog_base_filename);
+    unpack_logger->invoke_set_timestamp_format(log_prefs.timestamp_format);
+    unpack_logger->invoke_set_rotate_settings(log_prefs.log_max_archive_files, log_prefs.log_max_rotate_kb * 1024);
+    unpack_logger->invoke_enable(log_prefs.log_directory, unpacklog_base_filename, false);
+  }
 }
 
 void unpack::set_working_directory(const QString & dir)
@@ -110,7 +134,10 @@ void unpack::start_unpack_first_item()
   }
   else
   {
-    qDebug() << "UNPACK: setup_unpack_process failed - type of archive not found in file:" << unpack_queue.head();
+    const QString msg = "UNPACK: setup_unpack_process failed - type of archive not found in file: " + unpack_queue.head();
+    qDebug() << msg;
+    if(unpack_logger)
+      unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(), msg);
     meta_object_ext::invoke_async(this, &unpack::unpack_next_item);
   }
 }
@@ -146,7 +173,7 @@ bool unpack::has_fatal_error_occured() const
 
 bool unpack::setup_unpack_process(const QString & filename)
 {
-  QString archive_filename;
+  QString archive_filepath;
   QString archive_dir;
   QString archive_pwd = unpack_prefs.passwords.value(0, "-");
   QFileInfo file_info(filename);
@@ -158,19 +185,20 @@ bool unpack::setup_unpack_process(const QString & filename)
     {      
       archive_dir = QFileInfo(file_info.completeBaseName()).completeBaseName();
       const QString part = ".part*.rar";
-      archive_filename =  archive_dir + part;
+      archive_filepath =  archive_dir + part;
       remove_filename_filter = escape_name_filter(archive_dir) + part;
     }
     else
     {
       archive_dir = file_info.completeBaseName();
-      archive_filename = filename;
-      remove_filename_filter = escape_name_filter(archive_filename);
+      archive_filepath = filename;
+      remove_filename_filter = escape_name_filter(archive_filepath);
     }
 
-    archive_filename = working_dir + "/" + archive_filename;
+    curr_generic_archive_filename = archive_filepath;
+    archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
-    set_unrar_program(QStringList{"x", "-p" + archive_pwd, "-ai", "-y", "-c-", "-o+", archive_filename, archive_dir + "/"});
+    set_unrar_program(QStringList{"x", "-p" + archive_pwd, "-ai", "-y", "-c-", "-o+", archive_filepath, archive_dir + "/"});
     return true;
   }
 
@@ -180,19 +208,20 @@ bool unpack::setup_unpack_process(const QString & filename)
     {
       archive_dir = QFileInfo(file_info.completeBaseName()).completeBaseName();
       const QString part = ".7z.*";
-      archive_filename = archive_dir + part;
+      archive_filepath = archive_dir + part;
       remove_filename_filter = escape_name_filter(archive_dir) + part;
     }
     else
     {
       archive_dir = file_info.completeBaseName();
-      archive_filename = filename;
-      remove_filename_filter = escape_name_filter(archive_filename);
+      archive_filepath = filename;
+      remove_filename_filter = escape_name_filter(archive_filepath);
     }
 
-    archive_filename = working_dir + "/" + archive_filename;
+    curr_generic_archive_filename = archive_filepath;
+    archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
-    set_7z_program(QStringList{"x", "-p" + archive_pwd, "-aoa", "-y", "-o"+ archive_dir + "/", archive_filename});
+    set_7z_program(QStringList{"x", "-p" + archive_pwd, "-aoa", "-y", "-o"+ archive_dir + "/", archive_filepath});
     return true;
   }
 
@@ -239,7 +268,11 @@ void unpack::set_7z_program(const QStringList & prog_args)
 
 void unpack::start_unpack_process()
 {
-  qDebug() << "UNPACK started:" << unpack_process->program() << unpack_process->arguments().join(' ');
+  qDebug() << "UNPACK started: " + curr_generic_archive_filename;
+  if(unpack_logger)
+    unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(),
+                                   "================================================================================\n"
+                                   "UNPACK started: " + unpack_process->program() + " " + unpack_process->arguments().join(' '));
   is_running = true;
   unpack_process->start(QIODevice::ReadOnly | QIODevice::Text);
 }
@@ -271,13 +304,19 @@ void unpack::read_std_output()
       show_line = true;
 
     if(line.isEmpty() == false && show_line && line != "OK")
-      qDebug() << "UNPACK:" << line;
+    {
+      if(unpack_logger)
+        unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(), line);
+    }
   }
 }
 
 void unpack::process_error(QProcess::ProcessError error)
 {
   qDebug() << "UNPACK error:" << error << "Unpack program:" << unpack_process->program();
+  if(unpack_logger)
+    unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(),
+                                   "UNPACK error: " + QString::number(error) + " Unpack program: " + unpack_process->program());
   is_running = false;
   last_text.clear();
   fatal_error_occured = true;
@@ -286,7 +325,10 @@ void unpack::process_error(QProcess::ProcessError error)
 
 void unpack::process_finished(int exit_code, QProcess::ExitStatus exit_status)
 {
-  qDebug() << "UNPACK finished. Exit code:" << exit_code_to_string(exit_code) << "Exit status:" << exit_status;
+  const QString exit_code_str = exit_code_to_string(exit_code);
+  qDebug() << "UNPACK finished. Exit code:" << exit_code_str << "Exit status:" << exit_status;
+  if(unpack_logger)
+    unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(), "UNPACK finished. Exit code: " + exit_code_str);
   is_running = false;
   last_text.clear();
   if(is_shutdown || exit_status == QProcess::CrashExit)
@@ -381,9 +423,14 @@ void unpack::remove_unpacked_archive_files()
   while (it.hasNext())
   {
     const QString filepath = it.next();
-    qDebug() << "UNPACK: Delete file" << filepath;
-    if(QFile::remove(filepath) == false)
-      qDebug() << "UNPACK: Could not delete file:" << filepath;
+    QString log_msg;
+    if(QFile::remove(filepath))
+      log_msg = "Delete file " + filepath;
+    else
+      log_msg = "Could not delete file: " + filepath;
+
+    if(unpack_logger)
+      unpack_logger->invoke_log_text(QDateTime::currentMSecsSinceEpoch(), log_msg);
   }
 }
 

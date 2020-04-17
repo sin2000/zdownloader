@@ -74,6 +74,7 @@ SOURCES += \
     src/settings/output_messages_settings.cpp \
     src/settings/scheduler_settings.cpp \
     src/settings/unpack_settings.cpp \
+    src/settings/unpacklog_settings.cpp \
     src/unpack.cpp
 
 HEADERS += \
@@ -87,6 +88,7 @@ HEADERS += \
     src/settings/output_messages_settings.h \
     src/settings/scheduler_settings.h \
     src/settings/unpack_settings.h \
+    src/settings/unpacklog_settings.h \
     src/unpack.h
 
 unix {

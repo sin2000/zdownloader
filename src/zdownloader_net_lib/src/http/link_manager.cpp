@@ -211,7 +211,7 @@ void link_manager::check_links_on_server()
   link_checker->set_max_parallel_link_checks(max_parallel_link_checks);
   link_checker->set_max_ms_before_check_link_again_on_error(max_ms_before_check_link_again_on_error);
   link_checker->set_use_gdrive_api(use_gdrive_api);
-  link_checker->set_zippyshare_fetch_file_size(false);
+  link_checker->set_zippyshare_fetch_file_size(true);
 
   connect(link_checker, &multi_link_checker::download_links_info_success, this, &link_manager::check_links_on_server_success);
   connect(link_checker, &multi_link_checker::download_error, this, &link_manager::check_links_on_server_error);
@@ -228,6 +228,8 @@ void link_manager::check_next_links_on_server()
   }
   else
   {
+    move_links_file();
+
     link_checker->deleteLater();
     link_checker_in_use = false;
     links_in_groups.clear();
@@ -252,18 +254,30 @@ void link_manager::check_links_on_server_error(service::fetch_error /*error_code
   meta_object_ext::invoke_async(this, &link_manager::check_next_links_on_server);
 }
 
+void link_manager::move_links_file()
+{
+  const QString new_links_filename = "old_links.txt";
+
+  QFile::remove(links_file_dir + "/" + new_links_filename);
+  QFile::rename(links_file_path, links_file_dir + "/" + new_links_filename);
+}
+
 void link_manager::load_segments_ends(const QString & download_dir)
 {
   QDirIterator it(download_dir, QStringList() << "*.zdm", QDir::Files);
   while(it.hasNext())
   {
     QVector<qint64> saved_ends;
+    qint64 remaining_bytes = -1;
     QFile file(it.next());
     if(file.open(QIODevice::ReadOnly))
     {
       QDataStream in_data(&file);
       in_data.setVersion(QDataStream::Qt_5_14);
       in_data >> saved_ends;
+      in_data >> remaining_bytes;
+      if(in_data.status() != QDataStream::Ok)
+        remaining_bytes = -1;
     }
     else
     {
@@ -271,7 +285,7 @@ void link_manager::load_segments_ends(const QString & download_dir)
     }
 
     const QString dl_filename = it.fileInfo().completeBaseName();
-    download_queue.set_item_segment_ends_by_filename(dl_filename, saved_ends);
+    download_queue.set_item_segment_ends_by_filename(dl_filename, saved_ends, remaining_bytes);
 
     if(file.remove() == false)
       qDebug() << "Could not remove file" << file.fileName();
@@ -295,5 +309,6 @@ void link_manager::save_segments_ends(const QString & download_dir) const
     outds.setVersion(QDataStream::Qt_5_14);
     // Write the data
     outds << item->get_segment_ends();
+    outds << item->get_remaining_bytes();
   }
 }

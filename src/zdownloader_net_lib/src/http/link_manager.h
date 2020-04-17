@@ -38,6 +38,7 @@ private:
   void check_next_links_on_server();
   void check_links_on_server_success(const QList<download_item> & infos);
   void check_links_on_server_error(service::fetch_error error_code, const QString & error_text);
+  void move_links_file();
 
   void download_item_updater_finished(download_item_updater * sender, service::fetch_error error_code, const QString & error_text, download_item * item);
 

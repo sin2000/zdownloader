@@ -151,6 +151,27 @@ QString segmented_file_downloader::get_current_progress_msg() const
   return progress_msg;
 }
 
+qint64 segmented_file_downloader::get_ramaining_bytes() const
+{
+  qint64 all_seg_bytes_recv = 0;
+  for(const auto dl : downloaders)
+  {
+    all_seg_bytes_recv += dl->get_bytes_received_and_on_disk();
+  }
+
+  const qint64 file_total_size_bytes = curr_dl_item->get_file_size_bytes();
+  qint64 remaining_bytes = 0;
+  if(file_total_size_bytes > 0)
+    remaining_bytes = file_total_size_bytes - all_seg_bytes_recv;
+
+  return remaining_bytes;
+}
+
+void segmented_file_downloader::update_remaining_bytes()
+{
+  curr_dl_item->set_remaining_bytes(get_ramaining_bytes());
+}
+
 void segmented_file_downloader::save_and_abort_download(bool emit_finished_signal)
 {
   for(int i = 0; i < downloaders.size() && i < seg_metadata_list.size(); ++i)
@@ -160,6 +181,7 @@ void segmented_file_downloader::save_and_abort_download(bool emit_finished_signa
     if(seg_metadata_list[i].segment_finished == false)
       curr_dl_item->set_segment_end_pos(i, dl->get_last_file_write_cursor_pos());
   }
+  curr_dl_item->set_remaining_bytes(get_ramaining_bytes());
 
   if(emit_finished_signal)
     emit download_finished("Connections aborted for " + curr_dl_item->get_filename(), curr_dl_item->get_direct_download_link());
@@ -311,6 +333,7 @@ void segmented_file_downloader::download_segment_success(file_downloader2 * send
   {
     unsetup_file();
     curr_dl_item->clear_segment_ends();
+    curr_dl_item->set_remaining_bytes(-1);
     qDebug() << "HTTP: download success for FILE" << curr_dl_item->get_filename() << "from" << curr_dl_item->get_direct_download_link();
     emit download_finished("", curr_dl_item->get_direct_download_link());
   }

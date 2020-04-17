@@ -29,7 +29,7 @@ private slots:
     gdrive_api gapi;
     gapi.set_jwt_header(jwt_header);
     connect(&gapi, &gdrive_api::request_access_token_finished, [&](const QString & /*acc_token*/) {
-      connect(&gapi, &gdrive_api::file_info_finished, [&](QNetworkReply::NetworkError , const gdrive_file & info) {
+      connect(&gapi, &gdrive_api::file_info_finished, [&](QNetworkReply::NetworkError , const gdrive_file & /*info*/) {
         //gapi.remove_file("0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE");
 //        for(auto & f : files)
 //        {

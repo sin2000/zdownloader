@@ -4,17 +4,19 @@
 #include "http/link_manager_tests.h"
 #include "http/segment_calculator_tests.h"
 #include "utils/jwt_tests.h"
+#include "utils/archive_filename_comparator_tests.h"
 #include "http/gdrive/gdrive_api_tests.h"
+#include "http/gdrive/gdrive_service_tests.h"
 
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
   int status = 0;
-//  {
-//    downloadable_items_tests tc;
-//    status |= QTest::qExec(&tc, argc, argv);
-//  }
+  {
+    downloadable_items_tests tc;
+    status |= QTest::qExec(&tc, argc, argv);
+  }
 
   {
     zippy_link_extractor_tests tc;
@@ -40,6 +42,16 @@ int main(int argc, char *argv[])
 //    gdrive_api_tests tc;
 //    status |= QTest::qExec(&tc, argc, argv);
 //  }
+
+    {
+      gdrive_service_tests tc;
+      status |= QTest::qExec(&tc, argc, argv);
+    }
+
+    {
+      archive_filename_comparator_tests tc;
+      status |= QTest::qExec(&tc, argc, argv);
+    }
 
   return status;
 }

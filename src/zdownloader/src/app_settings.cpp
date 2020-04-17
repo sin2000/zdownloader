@@ -21,6 +21,7 @@ void app_settings::load()
   load_net_proxy_settings(&s);
   load_scheduler_settings(&s);
   load_gdrive_settings(&s);
+  load_upacklog_settings(&s);
 }
 
 void app_settings::load_general_settings(QSettings * s)
@@ -171,4 +172,17 @@ void app_settings::load_gdrive_settings(QSettings * s)
     gdrive.client_email = jobj.value("client_email").toString();
     gdrive.private_key = jobj.value("private_key").toString();
   }
+}
+
+void app_settings::load_upacklog_settings(QSettings * s)
+{
+  s->beginGroup("UnpackLog");
+  unpacklog.log_to_file_enabled = s->value("log_to_file_enabled").toBool();
+  unpacklog.log_directory = s->value("log_directory").toString();
+  unpacklog.timestamp_format = s->value("timestamp_format").toString();
+  unpacklog.log_max_rotate_kb = s->value("log_max_rotate_kb").toInt();
+  unpacklog.log_max_archive_files = s->value("log_max_archive_files").toInt();
+  s->endGroup();
+
+  unpacklog.correct_dirs();
 }

@@ -4,6 +4,7 @@
 #include "gdrive_api.h"
 #include "gdrive_file.h"
 #include <string_utils.h>
+#include <QUrlQuery>
 
 gdrive_service::gdrive_service(QNetworkAccessManager * global_nam, QObject * parent)
   :service(parent),
@@ -29,15 +30,18 @@ void gdrive_service::set_use_gdrive_api(bool gdrive_api_enabled)
 
 QString gdrive_service::get_file_id_from_gdrive_url(const QString & gdrive_url)
 {
-  const int last_slash_pos =  gdrive_url.lastIndexOf('/');
-  if(last_slash_pos == -1)
-    return "";
-
-  QString fid = gdrive_url.mid(last_slash_pos + 1);
-
-  const QString openId = "open?id=";
-  if(fid.startsWith(openId))
-    fid = fid.mid(openId.size());
+  // gdrive file id should have 33 chars or 28 chars but I don't know for sure
+  // so I don't check fid length
+  const QUrl gurl = gdrive_url;
+  const QUrlQuery query(gurl);
+  QString fid = query.queryItemValue("id");
+  if(fid.isEmpty())
+  {
+    const QString path = gurl.path();
+    fid = string_utils::pull_string(path, "/file/d/", "/");
+    if(fid.isEmpty())
+      fid = string_utils::pull_string(path, "/file/d/");
+  }
 
   return fid;
 }

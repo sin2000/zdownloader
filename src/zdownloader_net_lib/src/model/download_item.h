@@ -51,6 +51,9 @@ public:
   const QByteArray & get_access_token() const;
   void set_access_token(const QByteArray & token);
 
+  qint64 get_remaining_bytes() const;
+  void set_remaining_bytes(qint64 bytes);
+
 private:
   QString link;
   QString download_link;
@@ -58,7 +61,8 @@ private:
   download_status status;
   qint64 file_size_bytes;
 
-  QVector<qint64> segment_ends;
+  QVector<qint64> segment_offsets;
+  qint64 remaining_bytes;
 
   int group_id;
   QString initial_link;
