@@ -43,6 +43,7 @@ private:
   QFile * shared_file;
   QString file_name;
   qint64 bytes_received_last;
+  mutable qint64 bytes_received_at_point_of_time;
   qint64 bytes_received_and_on_disk;
   qint64 download_start_pos_bytes;
   qint64 download_end_pos_bytes;

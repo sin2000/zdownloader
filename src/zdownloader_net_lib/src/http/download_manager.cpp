@@ -519,7 +519,7 @@ void download_manager::check_download_speed()
   ++average_speed_counter;
   average_speed = calc_rolling_average(average_speed, speed_sum, average_speed_counter);
 
-  qDebug() << "speed sum:" << QString::number(speed_sum, 'f', 2) << "AVG SPEED:" << QString::number(average_speed, 'f', 2) << "Mb/s";
+  qDebug() << "SPEED:" << QString::number(speed_sum, 'f', 2) << "AVG SPEED:" << QString::number(average_speed, 'f', 2) << "Mb/s";
 
   check_download_speed_timer->start();
 }
