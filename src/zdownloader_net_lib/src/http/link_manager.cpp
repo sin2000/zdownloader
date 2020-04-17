@@ -228,6 +228,8 @@ void link_manager::check_next_links_on_server()
   }
   else
   {
+    move_links_file();
+
     link_checker->deleteLater();
     link_checker_in_use = false;
     links_in_groups.clear();
@@ -250,6 +252,14 @@ void link_manager::check_links_on_server_error(service::fetch_error /*error_code
 
   ++curr_links_group_idx;
   meta_object_ext::invoke_async(this, &link_manager::check_next_links_on_server);
+}
+
+void link_manager::move_links_file()
+{
+  const QString new_links_filename = "old_links.txt";
+
+  QFile::remove(links_file_dir + "/" + new_links_filename);
+  QFile::rename(links_file_path, links_file_dir + "/" + new_links_filename);
 }
 
 void link_manager::load_segments_ends(const QString & download_dir)
