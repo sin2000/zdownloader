@@ -78,3 +78,19 @@ QString string_utils::seconds_to_string(qint64 seconds)
 
   return ret;
 }
+
+QString string_utils::bytes_to_human_readable_string(qint64 bytes)
+{
+  static const QStringList units { "B", "KB", "MB", "GB", "TB", "EB" };
+
+  double result = bytes;
+  int unit_idx = 0;
+  while(unit_idx < units.size() && result >= 1024)
+  {
+    result /= 1024;
+    ++unit_idx;
+  }
+
+  const QString ret = QString::number(result, 'f', 2) + units.at(unit_idx);
+  return ret;
+}

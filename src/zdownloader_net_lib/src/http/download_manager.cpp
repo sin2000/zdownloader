@@ -9,6 +9,7 @@
 #include "../utils/jwt.h"
 #include <meta_object_ext.h>
 #include <increasing_timer.h>
+#include <string_utils.h>
 #include <QTimer>
 #include <qdebugex.h>
 
@@ -21,6 +22,7 @@ download_manager::download_manager(QNetworkAccessManager * global_nam, QObject *
    start_next_download_timer(new increasing_timer(this)),
    check_download_speed_timer(new QTimer(this)),
    check_progress_timer(new QTimer(this)),
+   check_remaining_stats_timer(new QTimer(this)),
    user_reconnect_timer(new QTimer(this)),
    average_speed(0.0),
    average_speed_counter(0),
@@ -46,6 +48,10 @@ download_manager::download_manager(QNetworkAccessManager * global_nam, QObject *
   check_progress_timer->setInterval(5000);
   check_progress_timer->setSingleShot(true);
   connect(check_progress_timer, &QTimer::timeout, this, &download_manager::check_progress);
+
+  check_remaining_stats_timer->setInterval(60 * 1000);
+  check_remaining_stats_timer->setSingleShot(true);
+  connect(check_remaining_stats_timer, &QTimer::timeout, this, &download_manager::check_remaining_stats);
 
   user_reconnect_timer->setInterval(30 * 1000);
   user_reconnect_timer->setSingleShot(true);
@@ -299,6 +305,7 @@ void download_manager::stop()
   start_next_download_timer->stop();
   check_download_speed_timer->stop();
   check_progress_timer->stop();
+  check_remaining_stats_timer->stop();
   user_reconnect_timer->stop();
 
   qDeleteAll(downloaders);
@@ -315,6 +322,8 @@ void download_manager::start()
     emit download_finished("");
     return;
   }
+  check_remaining_stats();
+
   user_reconnect_timer->start();
 
   start_next_download();
@@ -480,6 +489,7 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
     {
       start_next_download_timer->stop();
       user_reconnect_timer->stop();
+      check_remaining_stats_timer->stop();
       qDebug() << "Download queue empty. All downloads finished.";
       emit download_finished("");
     }
@@ -522,6 +532,21 @@ void download_manager::check_progress()
   }
 
   check_progress_timer->start();
+}
+
+void download_manager::check_remaining_stats()
+{
+  for(auto * dl : downloaders)
+  {
+    dl->update_remaining_bytes();
+  }
+
+  const qint64 remaining_bytes = lnk_mgr->get_download_queue().get_sum_of_remaining_bytes();
+
+  qDebug() << "REMAINING STATS:" << string_utils::bytes_to_human_readable_string(remaining_bytes)
+           << "| item(s) left:" << lnk_mgr->get_download_queue().get_all_items_count();
+
+  check_remaining_stats_timer->start();
 }
 
 void download_manager::reconnect_if_needed()

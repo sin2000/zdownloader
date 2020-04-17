@@ -24,6 +24,8 @@ public:
   void set_segment_write_buffer_size(int bytes);
   double get_current_download_speed_mbps() const;
   QString get_current_progress_msg() const;
+  qint64 get_ramaining_bytes() const;
+  void update_remaining_bytes();
   void save_and_abort_download(bool emit_finished_signal = false);
   download_item * get_curr_dl_item() const;
 

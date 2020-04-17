@@ -19,6 +19,12 @@ void download_item_updater::start_update(download_item * item)
 
   if(updatable_item->get_access_token().isEmpty() == false)
     link_checker->set_use_gdrive_api(true);
+
+  if(updatable_item->get_file_size_bytes() > 0)
+    link_checker->set_zippyshare_fetch_file_size(false);
+  else
+    link_checker->set_zippyshare_fetch_file_size(true);
+
   link_checker->download_links_info(QStringList(updatable_item->get_link()));
 }
 
@@ -34,7 +40,8 @@ void download_item_updater::download_links_info_success(const QList<download_ite
     const download_item & item = infos.first();
     //updatable_item->set_filename(item.get_filename());
     updatable_item->set_direct_download_link(item.get_direct_download_link());
-    updatable_item->set_file_size_bytes(item.get_file_size_bytes());
+    if(item.get_file_size_bytes() > 0)
+      updatable_item->set_file_size_bytes(item.get_file_size_bytes());
   }
   else
   {

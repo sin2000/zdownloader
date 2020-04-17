@@ -82,6 +82,7 @@ private:
   void file_download_success(dl_item_downloader * sender, download_item * item);
   void check_download_speed();
   void check_progress();
+  void check_remaining_stats();
   void reconnect_if_needed();
   double calc_rolling_average(double last_avg, double new_sample, int count);
 
@@ -92,6 +93,7 @@ private:
   increasing_timer * start_next_download_timer;
   QTimer * check_download_speed_timer;
   QTimer * check_progress_timer;
+  QTimer * check_remaining_stats_timer;
   QTimer * user_reconnect_timer;
 
   QSet<dl_item_downloader *> downloaders;

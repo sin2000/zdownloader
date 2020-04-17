@@ -233,12 +233,13 @@ QList<const download_item *> downloadable_items::get_segmented_items() const
   return segmented_items;
 }
 
-void downloadable_items::set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends)
+void downloadable_items::set_item_segment_ends_by_filename(const QString & filename, const QVector<qint64> & seg_ends, qint64 remaining_bytes)
 {
   auto it = filename_map.find(filename);
   if(it != filename_map.end())
   {
     it.value()->set_segment_ends(seg_ends);
+    it.value()->set_remaining_bytes(remaining_bytes);
   }
 }
 
@@ -246,6 +247,24 @@ void downloadable_items::set_download_lists_directory(const QString & dir_path)
 {
   download_lists_directory = dir_path;
   download_list_file_path = download_lists_directory + "/" + pending_download_list_filename;
+}
+
+qint64 downloadable_items::get_sum_of_remaining_bytes() const
+{
+  qint64 sum = 0;
+  for(const auto item : all_items)
+  {
+    const qint64 bytes = item->get_remaining_bytes();
+    if(bytes > 0)
+      sum += bytes;
+  }
+
+  return sum;
+}
+
+int downloadable_items::get_all_items_count() const
+{
+  return all_items.size();
 }
 
 void downloadable_items::load_from_file()
@@ -288,22 +307,24 @@ void downloadable_items::parse_file_content(const QString & content, QList<downl
   const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
   parsed_content->reserve(lines.size());
 
+  const int max_columns = 4;
   for(int i = 0; i < lines.size(); ++i)
   {
     const QString trimmed_line = lines.at(i).trimmed();
     const QStringList words = trimmed_line.split(QChar::Tabulation, QString::SkipEmptyParts);
-    if(words.size() == 3)
+    if(words.size() == max_columns)
     {
       download_item dl_item;
       dl_item.set_filename(words.at(0));
       dl_item.set_link(words.at(1));
       dl_item.set_group_id(words.at(2).toInt());
+      dl_item.set_file_size_bytes(words.at(3).toLongLong());
 
       parsed_content->append(dl_item);
     }
     else
     {
-      qDebug() << "File:" << download_list_file_path << "line" << i + 1 << "should contain 3 words";
+      qDebug() << "File:" << download_list_file_path << "line" << i + 1 << "should contain" << max_columns << "words";
     }
   }
 }
