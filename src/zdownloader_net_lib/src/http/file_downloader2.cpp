@@ -7,7 +7,6 @@
 file_downloader2::file_downloader2(QNetworkAccessManager * global_nam, QObject * parent)
   :abstract_get_request(global_nam, parent),
    bytes_received_last(0),
-   bytes_received_at_point_of_time(0),
    bytes_received_and_on_disk(0),
    download_start_pos_bytes(0),
    download_end_pos_bytes(0),
@@ -72,14 +71,10 @@ double file_downloader2::get_current_download_speed_bps() const
 {
   double current_speed = 0.0;
   const qint64 elapsed_ms_since_start = download_time->elapsed();
-  const qint64 bytes_received_since_start = bytes_received_last - bytes_received_at_point_of_time;
   if(elapsed_ms_since_start != 0)
-    current_speed = static_cast<double>(bytes_received_since_start) / elapsed_ms_since_start;
+    current_speed = static_cast<double>(bytes_received_last) / elapsed_ms_since_start;
 
   current_speed *= 1000;
-
-  download_time->start();
-  bytes_received_at_point_of_time = bytes_received_last;
 
   return current_speed;
 }
@@ -118,7 +113,6 @@ void file_downloader2::save_and_abort_download()
 void file_downloader2::download()
 {
   bytes_received_last = 0;
-  bytes_received_at_point_of_time = 0;
   file_write_cursor = download_start_pos_bytes;
   wrong_content_type = true;
   has_download_started = false;
