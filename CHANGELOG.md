@@ -1,4 +1,13 @@
 # Changelog
+### Changes in v2.0 (2020-04-XX):
+- added: after checking all links, the program will change the links.txt file name to old_links.txt
+- added: statistics of download remaining items. Statistics are shown every 60 seconds.
+- added: new UnpackLog section in zdownloader.ini file. Most of unpack messages will be now logged under unpacklog_\*.txt files instead of applog_\*.txt
+- added: on Linux added SIGHUP signal handler which results in the correct closing of the application under 'screen' like apps at system shutdown
+- added: better file grouping in download_list.txt (https://github.com/sin2000/zdownloader/issues/7)
+- added: recognition of probably all gdrive file link types
+- minor fixes
+
 ### Changes in v1.9 (2020-04-08):
 - added: bypass gdrive download limit by using google drive api (see [readme](https://github.com/sin2000/zdownloader/blob/master/README.md) and [service account howto](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md))
 - fixed: the program will crash when user stops it(Ctrl-C/SIGINT) immediately after starting it(after 'Loading state')
