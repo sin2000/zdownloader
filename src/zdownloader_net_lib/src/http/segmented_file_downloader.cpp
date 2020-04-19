@@ -333,7 +333,7 @@ void segmented_file_downloader::download_segment_success(file_downloader2 * send
   {
     unsetup_file();
     curr_dl_item->clear_segment_ends();
-    curr_dl_item->set_remaining_bytes(-1);
+    curr_dl_item->set_remaining_bytes(0);
     qDebug() << "HTTP: download success for FILE" << curr_dl_item->get_filename() << "from" << curr_dl_item->get_direct_download_link();
     emit download_finished("", curr_dl_item->get_direct_download_link());
   }

@@ -1,6 +1,9 @@
 #include "segment_metadata.h"
 
 segment_metadata::segment_metadata()
+  :start_pos(0),
+   end_pos(0),
+   segment_finished(false)
 {
 }
 
