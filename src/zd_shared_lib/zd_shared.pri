@@ -43,6 +43,7 @@ CONFIG(debug, debug|release) {
     }
 }
 else {
+    CONFIG += ltcg
     DEFINES += ZD_RELEASE
 
     DESTDIR = ./bin_release
