@@ -34,6 +34,7 @@ file_downloader2::~file_downloader2()
 void file_downloader2::set_download_start_pos(qint64 bytes)
 {
   download_start_pos_bytes = bytes;
+  file_write_cursor = bytes;
 }
 
 void file_downloader2::set_download_end_pos(qint64 bytes)

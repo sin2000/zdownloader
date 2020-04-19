@@ -289,6 +289,8 @@ void link_manager::load_segments_ends(const QString & download_dir)
 
     if(file.remove() == false)
       qDebug() << "Could not remove file" << file.fileName();
+
+    //qDebug() << "LOAD SEGMENT OFFSETS:" << saved_ends << "REMAINING BYTES:" << remaining_bytes << dl_filename;
   }
 }
 
@@ -310,5 +312,7 @@ void link_manager::save_segments_ends(const QString & download_dir) const
     // Write the data
     outds << item->get_segment_ends();
     outds << item->get_remaining_bytes();
+
+    //qDebug() << "SAVE SEGMENT OFFSETS:" << item->get_segment_ends() << "REMAINING BYTES:" << item->get_remaining_bytes() << item->get_filename();
   }
 }
