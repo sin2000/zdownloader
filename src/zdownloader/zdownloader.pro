@@ -91,6 +91,8 @@ HEADERS += \
     src/settings/unpacklog_settings.h \
     src/unpack.h
 
+OTHER_FILES += data/zdownloader.ini
+
 unix {
 SOURCES += \
     src/unix_sigwatch.cpp
