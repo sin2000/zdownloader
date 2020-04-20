@@ -1,6 +1,6 @@
 ## Changelog
+- 2020-04-xx v2.0 - [LINK](CHANGELOG.md)
 - 2020-04-08 v1.9 - [LINK](CHANGELOG.md)
-- 2020-03-23 v1.8 - [LINK](CHANGELOG.md)
 
 # zdownloader
 Zdownloader is a lightweight download manager running from command line.  
@@ -63,6 +63,11 @@ I have attached precompiled Botan library in lib directory (https://botan.random
 - you can add '--' chars to append links as one group,
 - you can add encoded links,
 - you can put line comments - just add hash(#) character before comment.
+- from zdownloader v2.0 you can use(in links.txt file) any of these gdrive link formats (and similar):  
+https://drive.google.com/file/d/0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE  
+https://drive.google.com/file/d/0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE/view  
+https://drive.google.com/uc?id=0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE  
+https://drive.google.com/uc?id=0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE&export=download
 
 ### Example of links.txt file:
 ```
@@ -79,9 +84,9 @@ https://megaup.net/3Pwaa/something.rar #comment: example link
 - download_list.txt file is created after links checks,
 - download list has format:
 ```
-file_name URL group_id
+file_name URL group_id file_size
 ```
-Three fields separated by tab character.  
+Four fields separated by tab character.  
 Group_id contains group number - is used for unpack archives.  
 - You can edit(eg. change order) download_list.txt when zdownloader is not running,
 - If remote file does not exists then zdownloader skips that file.
@@ -241,6 +246,24 @@ unrar_binary=
 ;3\pass=mypass3
 size=1
 
+[UnpackLog]
+; log_to_file_enabled
+; enable or disable log unpack messages to unpacklog_*.txt files.
+log_to_file_enabled=true
+; log_directory
+; program will save 'unpacklog_*.txt' files in download_lists_directory
+; if directory contains spaces then enclose it in quotation marks
+; set empty or '.' for current directory
+; on Windows use slash or double backslash as dir separators
+log_directory=
+; timestamp_format
+; format details: https://doc.qt.io/archives/qt-5.13/qdatetime.html#toString
+timestamp_format="yyyyMMdd.hh:mm:ss"
+; log_max_rotate_kb
+; integer value in KBytes
+log_max_rotate_kb=512
+log_max_archive_files=2
+
 [NetworkProxy]
 ; enable_network_proxy
 ; set true if you want forward all network activity through proxy server
@@ -278,8 +301,8 @@ Zdownloader can save everything from standard output to rotated log files:
 `applog_1.log ...`
 
 ## Download:
-- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/linux-x86-64.zip)
-- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/arm-linux-gnueabihf.zip)
-- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/aarch64-linux-gnu.zip)
-- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/win7_8_10-x64.zip)
-- for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/1.9/win7_8_10-x86.zip)
+- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/linux-x86-64.zip)
+- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/arm-linux-gnueabihf.zip)
+- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/aarch64-linux-gnu.zip)
+- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x64.zip)
+- for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x86.zip)
