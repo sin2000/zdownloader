@@ -1,6 +1,6 @@
 ## Changelog
-- 2020-04-08 v1.9 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
-- 2020-03-23 v1.8 - [LINK](https://github.com/sin2000/zdownloader/blob/master/CHANGELOG.md)
+- 2020-04-08 v1.9 - [LINK](CHANGELOG.md)
+- 2020-03-23 v1.8 - [LINK](CHANGELOG.md)
 
 # zdownloader
 Zdownloader is a lightweight download manager running from command line.  
@@ -9,7 +9,7 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - Google Drive,
 - MegaUp(megaup.net).
 
-![screenshot](https://github.com/sin2000/zdownloader/blob/master/images/zd_running_pub.png)
+![screenshot](images/zd_running_pub.png)
 
 ## Features
 - Can download multiple files at a time.
@@ -95,7 +95,7 @@ R (skipped download, remote file does not exists)
 
 ### How gdrive download limit bypass works?
 - Zdownloader can download google drive files even if the daily limit of download has exceeded. For that zdownloader can use google drive REST API v3.
-- Before you start see how to enable and create service account: [LINK](https://github.com/sin2000/zdownloader/blob/master/HOWTO_gdrive_service_account.md)
+- Before you start see how to enable and create service account: [LINK](HOWTO_gdrive_service_account.md)
 1. The Google Drive API provides an option for 3rd party applications to store their own data on Google Drive, but sandboxed from the user's main file storage area. Hence zdownloader cannot read, modify or delete your Google Drive data. A user's space allocation (default 15GB) is shared between all applications that store data in their Google Account - Drive, Gmail, Google Photos and 3rd party apps like zdownloader.
 2. At first step zdownloader list all files on gdrive.
 3. Next zdownloader deletes all found files.
