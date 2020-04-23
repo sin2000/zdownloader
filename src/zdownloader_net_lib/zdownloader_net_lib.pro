@@ -5,7 +5,7 @@ include(../zd_shared_lib/zd_shared.pri)
 
 DEFINES += ZDOWNLOADER_NET_LIB
 
-QT += network
+QT += network script
 QT -= gui
 
 CONFIG(debug, debug|release) {

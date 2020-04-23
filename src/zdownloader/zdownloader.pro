@@ -1,6 +1,6 @@
 include(../zd_shared_lib/zd_shared.pri)
 
-QT += network
+QT += network script
 QT -= gui
 
 CONFIG += console
