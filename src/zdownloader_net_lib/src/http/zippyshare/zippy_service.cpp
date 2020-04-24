@@ -6,6 +6,7 @@
 zippy_service::zippy_service(QNetworkAccessManager * global_nam, bool fetch_file_size, QObject * parent)
   :service(parent),
    html_dl(new html_downloader(global_nam, this)),
+   head_dl(nullptr),
    link_extractor(new zippy_link_extractor),
    fetch_file_size_enabled(fetch_file_size)
 {
@@ -28,6 +29,8 @@ zippy_service::~zippy_service()
 void zippy_service::abort_operation() const
 {
   html_dl->abort_operation();
+  if(head_dl)
+    head_dl->abort_operation();
 }
 
 void zippy_service::fetch_info()

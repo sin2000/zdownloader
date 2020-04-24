@@ -2,10 +2,26 @@
 #include <string_utils.h>
 #include <QUrl>
 #include <QFileInfo>
+#include <QScriptEngine>
+#include <QTimer>
+#include <meta_object_ext.h>
+#include <qdebugex.h>
+
+std::unique_ptr<QScriptEngine> zippy_link_extractor::script_engine = nullptr;
 
 zippy_link_extractor::zippy_link_extractor()
-  :last_error(unknown_error)
+  :last_error(unknown_error),
+   abort_js_timer(new QTimer(this))
 {
+  if(script_engine == nullptr)
+  {
+    script_engine = std::unique_ptr<QScriptEngine>(new QScriptEngine);
+    script_engine->setProcessEventsInterval(5 * 1000);
+  }
+
+  abort_js_timer->setSingleShot(true);
+  abort_js_timer->setInterval(15 * 1000);
+  connect(abort_js_timer, &QTimer::timeout, this, &zippy_link_extractor::abort_javascript_eval);
 }
 
 const QString & zippy_link_extractor::get_extracted_link() const
@@ -40,132 +56,7 @@ bool zippy_link_extractor::parse_html(const QString & html, const QString & src_
 
   const int after_dlbutton_pos = pos + id.size();
 
-  QString js_link;
-  if(find_js_value(html, "document.getElementById('dlbutton').href", &js_link, after_dlbutton_pos) == false)
-    return false;
-
-  const QString filename = find_filename_in_js(js_link);
-  if(filename.isEmpty())
-    return false;
-
-  QString vd;
-  int end_pos;
-
-  if(algo_parse3(html, after_dlbutton_pos, filename))
-    return true;
-
-  if(algo_parse2(html, after_dlbutton_pos, filename) == false)
-  {
-    if(find_js_value(html, "d", &vd, after_dlbutton_pos, &end_pos) == false)
-      return old_algo_parse(html, after_dlbutton_pos, js_link, filename);
-
-    if(find_js_value(html, "d", &vd, end_pos) == false)
-      return false;
-
-    const QStringList vd_split = vd.split('%');
-    if(vd_split.isEmpty())
-      return false;
-
-    bool conv_ok = false;
-    int a = vd_split.at(0).toInt(&conv_ok);
-    if(conv_ok == false)
-      return false;
-
-    const int b = a % 53;
-    const int c = 8;
-    const int d = a % 13;
-    a %= 900;
-    const int dyn = a * b + c + d;
-    const QString dyn_part = QString::number(dyn);
-
-    compose_dest_link(dyn_part, filename);
-  }
-
-  return true;
-}
-
-bool zippy_link_extractor::algo_parse2(const QString & html, int after_dlbutton_pos, const QString & filename)
-{
-  QString vb;
-  int end_pos;
-  if(find_js_value(html, "n", &vb, after_dlbutton_pos, &end_pos) == false)
-    return false;
-
-  if(find_js_value(html, "b", &vb, end_pos) == false)
-    return false;
-
-  bool conv_ok = false;
-  int b = vb.toInt(&conv_ok);
-  if(conv_ok == false)
-    return false;
-
-  b += 6;
-  const QString dyn_part = QString::number(b) + "3";
-  compose_dest_link(dyn_part, filename);
-
-  return true;
-}
-
-bool zippy_link_extractor::algo_parse3(const QString & html, int after_dlbutton_pos, const QString & filename)
-{
-  QString va;
-  int end_pos;
-  if(find_js_value(html, "a", &va, after_dlbutton_pos, &end_pos) == false)
-    return false;
-
-  if(html.indexOf("\"asdasd\".", end_pos) == -1)
-    return false;
-
-  bool conv_ok = false;
-  int a = va.toInt(&conv_ok);
-  if(conv_ok == false)
-    return false;
-
-  a = a * a * a;
-  a += 3;
-  const QString dyn_part = QString::number(a);
-  compose_dest_link(dyn_part, filename);
-
-  return true;
-}
-
-bool zippy_link_extractor::old_algo_parse(const QString & html, int after_dlbutton_pos, const QString & js_link,
-                                          const QString & filename)
-{
-  QString dyn_part;
-  QString va;
-  if(find_js_value(html, "a", &va, after_dlbutton_pos))
-  {
-    QString vb;
-    if(find_js_value(html, "b", &vb, after_dlbutton_pos + va.size()) == false)
-      return false;
-
-    bool conv_ok = false;
-    int a = va.toInt(&conv_ok);
-    if(conv_ok == false)
-      return false;
-
-    int b = vb.toInt(&conv_ok);
-    if(conv_ok == false)
-      return false;
-
-    const int dyn = (a / 3) + (a % b);
-    dyn_part = QString::number(dyn);
-  }
-  else
-  {
-    const QString dyn_string = string_utils::pull_string(js_link, "(", ")");
-    if(dyn_string.isEmpty())
-       return false;
-
-    dyn_part = parse_and_compute_dyn_string(dyn_string);
-    if(dyn_part.isEmpty())
-       return false;
-  }
-
-  compose_dest_link(dyn_part, filename);
-
-  return true;
+  return eval_javascript(html, after_dlbutton_pos);
 }
 
 void zippy_link_extractor::check_file_existence(const QString & html)
@@ -176,84 +67,65 @@ void zippy_link_extractor::check_file_existence(const QString & html)
     last_error = file_does_not_exists;
 }
 
-bool zippy_link_extractor::find_js_value(const QString & js, const QString & js_var_name, QString * value, int start_from,
-                                         int * end_pos) const
+bool zippy_link_extractor::eval_javascript(const QString & html, int after_dl_button_pos)
 {
-  const QString var_prefix = js_var_name + " = ";
+  const QString tmp = html.mid(after_dl_button_pos);
+  QString script = string_utils::pull_string(tmp, "<script type=\"text/javascript\">", "</script>");
+  if(script.size() > 4096)
+    return false;
+  script.replace("document.getElementById('dlbutton')", "zdownloader_sin2000");
+  script.replace("document.getElementById('fimage')", "ffk6f3l6ns9g834");
+  script.prepend("var zdownloader_sin2000 = {}; var ffk6f3l6ns9g834 = {};");
+  script += "zdownloader_sin2000.href;";
 
-  int pos = js.indexOf(var_prefix, start_from);
-  if(pos == -1)
+  meta_object_ext::invoke_async(this, &zippy_link_extractor::schedule_abort_javascript_eval);
+  script_engine->pushContext();
+  const QScriptValue val = script_engine->evaluate(script);
+  script_engine->popContext();
+  abort_js_timer->stop();
+  if(check_for_eval_errors(val).isEmpty() == false)
     return false;
 
-  int end = js.indexOf(';', pos + var_prefix.size());
-  if(end == -1)
+  const QString href = val.toString();
+  if(href.isEmpty())
     return false;
 
-  pos += var_prefix.size();
-
-  *value = js.mid(pos, end - pos);
-  if(end_pos)
-    *end_pos = pos;
+  const QUrl url(source_link);
+  const QUrl h(href);
+  dest_link = url.resolved(h).toString(QUrl::None);
 
   return true;
 }
 
-QString zippy_link_extractor::find_filename_in_js(const QString & js) const
+void zippy_link_extractor::schedule_abort_javascript_eval()
 {
-  QString filename;
-
-  int end = js.lastIndexOf('"');
-  if(end == -1)
-    return "";
-
-  --end;
-
-  int start = js.lastIndexOf('/', end);
-  if(start == -1)
-    return "";
-
-  filename = js.mid(start + 1, end - start);
-
-  return filename;
+  if(script_engine->isEvaluating())
+    abort_js_timer->start();
 }
 
-QString zippy_link_extractor::parse_and_compute_dyn_string(const QString & dyn_string) const
+void zippy_link_extractor::abort_javascript_eval()
 {
-  const QStringList list = dyn_string.split(' ', QString::SkipEmptyParts);
-  if(list.size() != 7)
-    return "";
-
-  bool conv_ok = false;
-
-  const int a = list.at(0).toInt(&conv_ok);
-  if(conv_ok == false)
-    return "";
-
-  const int b = list.at(2).toInt(&conv_ok);
-  if(conv_ok == false)
-    return "";
-
-  const int c = list.at(4).toInt(&conv_ok);
-  if(conv_ok == false)
-    return "";
-
-  const int d = list.at(6).toInt(&conv_ok);
-  if(conv_ok == false)
-    return "";
-
-  const int res = (a % b) + (c % d);
-
-  return QString::number(res);
+  if(script_engine->isEvaluating())
+  {
+    script_engine->abortEvaluation();
+    qDebug() << "WARNING: zippy_link_extractor - javascript eval timeout";
+  }
 }
 
-void zippy_link_extractor::compose_dest_link(const QString & dynamic_part, const QString & filename)
+QString zippy_link_extractor::check_for_eval_errors(const QScriptValue & val) const
 {
-  QUrl url(source_link);
-  QString src_path_prefix = QFileInfo(url.path()).path();
-  if(src_path_prefix.size() >= 2)
-    src_path_prefix[1] = 'd';
+  if(script_engine->hasUncaughtException())
+  {
+    const QString script_err = script_engine->uncaughtException().toString();
+    const QString err_msg = QObject::tr("javascript_obj is invalid: %1").arg(script_err);
+    return err_msg;
+  }
 
-  QUrl relative(src_path_prefix + "/" + dynamic_part + "/" + filename);
+  if(val.isValid() == false)
+  {
+    const QString err_msg = QObject::tr("javascript_obj is not valid");
+    return err_msg;
+  }
 
-  dest_link = url.resolved(relative).toString(QUrl::None);
+  return "";
 }

@@ -156,7 +156,6 @@ const QVector<qint64> & download_item::get_segment_ends() const
 
 void download_item::set_segment_ends(const QVector<qint64> & seg_ends)
 {
-
   segment_offsets = seg_ends;
 }
 

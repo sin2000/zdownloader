@@ -216,15 +216,7 @@ bool downloadable_items::contains_link(const QString & link) const
 QList<const download_item *> downloadable_items::get_segmented_items() const
 {
   QList<const download_item *> segmented_items;
-  segmented_items.reserve(pending_items.size() + working_items.size());
-
-  for(const auto item : pending_items)
-  {
-    if(item->is_segment_ends_empty() == false)
-      segmented_items.append(item);
-  }
-
-  for(const auto item : working_items)
+  for(const auto item : all_items)
   {
     if(item->is_segment_ends_empty() == false)
       segmented_items.append(item);

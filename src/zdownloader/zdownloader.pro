@@ -1,6 +1,6 @@
 include(../zd_shared_lib/zd_shared.pri)
 
-QT += network
+QT += network script
 QT -= gui
 
 CONFIG += console
@@ -90,6 +90,8 @@ HEADERS += \
     src/settings/unpack_settings.h \
     src/settings/unpacklog_settings.h \
     src/unpack.h
+
+OTHER_FILES += data/zdownloader.ini
 
 unix {
 SOURCES += \
