@@ -1,5 +1,5 @@
 ## Changelog
-- 2020-04-xx v2.0 - [LINK](CHANGELOG.md)
+- 2020-04-24 v2.0 - [LINK](CHANGELOG.md)
 - 2020-04-08 v1.9 - [LINK](CHANGELOG.md)
 
 # zdownloader
@@ -21,12 +21,14 @@ Zdownloader was written in C++ and supports downloading files by HTTPS from serv
 - Supports network proxies.
 - Allows you to download google drive files even if the daily limit of download has exceeded using google drive REST API v3.
 
-## Requirements (for x86-64)
+## Requirements
+#### Linux x86-64  
 `ldd zdownloader`:
 - linux-vdso.so.1
 - libbotan-2.so.13
 - libQt5Network.so.5 
 - libQt5Core.so.5
+- libQt5Script.so.5
 - libpthread.so.0
 - libstdc++.so.6
 - libgcc_s.so.1
@@ -299,6 +301,15 @@ Zdownloader can power off system on download finish. For that zdownloader uses
 #### applog_\*.log files:
 Zdownloader can save everything from standard output to rotated log files:  
 `applog_1.log ...`
+
+## All contributions are welcome
+#### Help and contributions can be any of the following:
+- star the project
+- new feature or bug fixing via a pull requests
+- report issues to the project issues page
+- other ideas
+
+##### If you like this project please give it a star ⭐. Thanks!
 
 ## Download:
 - for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/linux-x86-64.zip)
