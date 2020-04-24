@@ -1,5 +1,6 @@
 # Changelog
-### Changes in v2.0 (2020-04-XX):
+### Changes in v2.0 (2020-04-24):
+- added: javascript engine for extracting zippyshare links (https://github.com/sin2000/zdownloader/issues/8)
 - added: after checking all links, the program will change the links.txt file name to old_links.txt
 - added: statistics of download remaining items. Statistics are shown every 60 seconds.
 - added: new UnpackLog section in zdownloader.ini file. Most of unpack messages will be now logged under unpacklog_\*.txt files instead of applog_\*.txt
