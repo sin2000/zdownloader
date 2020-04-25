@@ -56,6 +56,9 @@ I have attached precompiled Botan library in lib directory (https://botan.random
 - for unpack rar files: WinRar >= 5.50 - https://www.rarlab.com/download.htm
 - for unpack 7z, zip files: 7-zip >= 16.02 - https://www.7-zip.org/download.html
 
+## Build instructions
+- [BUILD HOWTO](BUILD_README.md)
+
 ## Usage
 **links.txt** file:
 - create links.txt file in zdownloader directory,
