@@ -89,12 +89,19 @@ Qt for Linux x64 can be configured for build with minimal dependencies like this
 -I/home/user/Qt/Tools/OpenSSL/binary/include
 ```
 
-## Build
+## Building zdownloader from command line
 - Go to src/ directory
 - run:  
 `qmake zd.pro && make`
+- after build zdownloader binary should be in `src/zdownloader/bin_release`
 
-## Build for very old 32-bit CPUs without SSE2 instructions
+## Building zdownloader with QtCreator
+- open [src/zdownloader/src/zd.pro](src/zdownloader/src/zd.pro) in QtCreator
+- configure as Release build
+- make sure that 'Shadow build' is disabled:
+![screenshot](images/qtcreator_disable_shadow_build.png)
+
+## Building zdownloader for very old 32-bit CPUs(x86 arch) without SSE2 instructions
 - By default Qt requires CPU with SSE2 instructions. If you want run zdownloader on very old 32-bit CPU without SSE2 then you should rebuild Qt with `-no-sse2` switch.
 - You also need to recompile botan library like this  
 `python configure.py --minimized-build --disable-sse2 --enable-modules=system_rng,rsa,aes,emsa_pkcs1`  
