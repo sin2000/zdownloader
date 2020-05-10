@@ -13,7 +13,6 @@ file_logger::file_logger(const QString & /*name*/, bool use_lock_file, bool use_
    lock_file(nullptr),
    enabled_lock_file(use_lock_file),
    enabled_qdebug(use_qdebug),
-   archive_counter(1),
    max_archive_files(3),
    max_rotate_bytes(3 * 1024 * 1024) // 3MB
 {

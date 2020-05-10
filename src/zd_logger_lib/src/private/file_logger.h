@@ -37,7 +37,6 @@ private:
   bool enabled_qdebug;
 
   static const QString archive_placeholder;
-  int archive_counter;
   int max_archive_files;
   int max_rotate_bytes;
 };

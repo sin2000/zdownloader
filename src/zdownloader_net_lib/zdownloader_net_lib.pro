@@ -161,6 +161,9 @@ inc_botan_wrapper {
             LIBS += -L$$PWD/../zd_shared_lib/src/lib/botan/win32/lib/ -lbotan
         }
     }
+    macx {
+        LIBS += -L$$PWD/../zd_shared_lib/src/lib/botan/macx/lib/ -lbotan-2
+    }
 }
 # BOTAN SHARED LIBRARY END =====================================================================================
 }

@@ -33,7 +33,7 @@ void unix_sigwatch::watch_for_signal(int signal)
   struct sigaction sigact;
   sigact.sa_handler = unix_sigwatch::signal_handler;
   sigact.sa_flags = 0;
-  ::sigemptyset(&sigact.sa_mask);
+  sigemptyset(&sigact.sa_mask);
   sigact.sa_flags |= SA_RESTART;
   if(::sigaction(signal, &sigact, nullptr))
   {

@@ -42,6 +42,11 @@ inc_botan_wrapper {
             DEPENDPATH += $$PWD/../zd_shared_lib/src/lib/botan/win32/include
         }
     }
+    macx {
+        LIBS += -L$$PWD/../zd_shared_lib/src/lib/botan/macx/lib/ -lbotan-2
+        INCLUDEPATH += $$PWD/../zd_shared_lib/src/lib/botan/macx/include
+        DEPENDPATH += $$PWD/../zd_shared_lib/src/lib/botan/macx/include
+    }
 }
 #QMAKE_LFLAGS += -Wl,-rpath,"."
 # BOTAN SHARED LIBRARY END =====================================================================================

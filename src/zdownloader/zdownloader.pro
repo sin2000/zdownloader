@@ -11,7 +11,8 @@ CONFIG(debug, debug|release) {
 }
 else {
     TARGET = zdownloader
-    QMAKE_POST_LINK=$(STRIP) -s $(TARGET)
+    macx:QMAKE_POST_LINK=$(STRIP) $(TARGET)
+    else:unix:QMAKE_POST_LINK=$(STRIP) -s $(TARGET)
 }
 
 # ZDOWNLOADER NET LIBRARY ============================================================================================
@@ -56,6 +57,9 @@ inc_botan_wrapper {
         else {
             LIBS += -L$$PWD/../zd_shared_lib/src/lib/botan/win32/lib/ -lbotan
         }
+    }
+    macx {
+        LIBS += -L$$PWD/../zd_shared_lib/src/lib/botan/macx/lib/ -lbotan-2
     }
 }
 # BOTAN SHARED LIBRARY END =====================================================================================
