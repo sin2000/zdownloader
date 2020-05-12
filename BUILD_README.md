@@ -2,8 +2,9 @@
 ### Requirements
 - Qt 5.14 (probably some versions below 5.14 will work too)
 - Botan >= 2.14
-- On Windows: MSVC 2017
-- On Linux: g++ (at least with c++11 support)
+- Windows: MSVC 2017
+- Linux: g++ (at least with c++11 support)
+- MacOS: Xcode developer tools (tested on macOS 10.14 Mojave)
 
 ## Preparations
 - the most important build configuration is in the file [src/zd_shared_lib/zd_shared.pri](src/zd_shared_lib/zd_shared.pri)
