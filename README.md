@@ -315,6 +315,10 @@ Zdownloader can power off system on download finish. For that zdownloader uses
 Zdownloader can save everything from standard output to rotated log files:  
 `applog_1.log ...`
 
+#### \*.zdm files:
+When the download is interrupted, the program saves segment offsets to \*.zdm files in `download_directory`.  
+The zdm file also contains the number of remaining bytes to download.
+
 ## All contributions are welcome
 #### Help and contributions can be any of the following:
 - star the project
