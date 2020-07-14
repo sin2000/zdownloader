@@ -146,6 +146,8 @@ cd zdownloader.app/Contents/MacOS/
 ```
 
 #### Settings are stored in zdownloader.ini file:
+Hint: in `zdownloader.ini` file you cannot use tilde(~) character as alias to user's home directory.
+
 ```ini
 ; UTF-8 encoding
 
