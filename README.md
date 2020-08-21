@@ -135,7 +135,19 @@ from zdownloader directory.
 
 To stop zdownloader press Ctrl-C or send SIGINT or SIGTERM signal.
 
+### Running zdownloader on MacOS
+- Unpack `macos_x64.tgz` and copy `zdownloader.app` to user's home directory.
+- Edit `zdownloader.ini` in `zdownloader.app/Contents/MacOS/zdownloader.ini`
+- Edit `links.txt` in `zdownloader.app/Contents/MacOS/links.txt`
+- Run Terminal and write commands:
+```
+cd zdownloader.app/Contents/MacOS/
+./zdownloader
+```
+
 #### Settings are stored in zdownloader.ini file:
+Hint: in `zdownloader.ini` file you cannot use tilde(~) character as alias to user's home directory.
+
 ```ini
 ; UTF-8 encoding
 
@@ -305,6 +317,10 @@ Zdownloader can power off system on download finish. For that zdownloader uses
 Zdownloader can save everything from standard output to rotated log files:  
 `applog_1.log ...`
 
+#### \*.zdm files:
+When the download is interrupted, the program saves segment offsets to \*.zdm files in `download_directory`.  
+The zdm file also contains the number of remaining bytes to download.
+
 ## All contributions are welcome
 #### Help and contributions can be any of the following:
 - star the project
@@ -320,3 +336,4 @@ Zdownloader can save everything from standard output to rotated log files:
 - for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/aarch64-linux-gnu.zip)
 - for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x64.zip)
 - for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x86.zip)
+- for MacOS x64 (tested on Mojave): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/macos_x64.tgz)
