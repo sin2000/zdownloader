@@ -73,6 +73,7 @@ bool zippy_link_extractor::eval_javascript(const QString & html, int after_dl_bu
   QString script = string_utils::pull_string(tmp, "<script type=\"text/javascript\">", "</script>");
   if(script.size() > 4096)
     return false;
+  script.replace("document.getElementById('omg').getAttribute('class')", "2");
   script.replace("document.getElementById('dlbutton')", "zdownloader_sin2000");
   script.replace("document.getElementById('fimage')", "ffk6f3l6ns9g834");
   script.prepend("var zdownloader_sin2000 = {}; var ffk6f3l6ns9g834 = {};");

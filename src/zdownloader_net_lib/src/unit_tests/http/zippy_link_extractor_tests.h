@@ -156,5 +156,36 @@ private slots:
     QCOMPARE(exlink, QString("https://www17.zippyshare.com/d/AAAAAAAA/636059/20022003.zip"));
     QCOMPARE(exfilename, QString("20022003.zip"));
   }
+
+  void parse_html_returns_true_test6()
+  {
+    const QString src_link = "https://www17.zippyshare.com/v/AAAAAAAA/file.html";
+
+    const QString input =
+        R"(
+        <a id="dlbutton"  href="#">
+        <span id="omg" class="2" style="display:none;"></span>
+        <script type="text/javascript">
+            var a = function() {return 1};
+            var b = function() {return a() + 1};
+            var c = function() {return b() + 1};
+            var d = document.getElementById('omg').getAttribute('class');
+            if (true) { d = d*2;}
+            document.getElementById('dlbutton').href = "/d/AAAAAAAA/"+(462509%1000 + a() + b() + c() + d + 5/5)+"/20022003.zip";
+            if (document.getElementById('fimage')) {
+                document.getElementById('fimage').href = "/i/AAAAAAAA/"+(462509%1000 + a() + b() + c() + d + 5/5)+"/20022003.zip";
+            }
+        </script>
+        )";
+
+    zippy_link_extractor extractor;
+    bool result = extractor.parse_html(input, src_link);
+    QString exlink = extractor.get_extracted_link();
+    QString exfilename = extractor.get_extracted_filename();
+
+    QCOMPARE(result, true);
+    QCOMPARE(exlink, QString("https://www17.zippyshare.com/d/AAAAAAAA/520/20022003.zip"));
+    QCOMPARE(exfilename, QString("20022003.zip"));
+  }
 };
 #endif // ZIPPY_LINK_EXTRACTOR_TESTS_H

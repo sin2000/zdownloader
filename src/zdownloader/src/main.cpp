@@ -21,7 +21,7 @@
 int main(int argc, char *argv[])
 {
   qApp->setApplicationName("zdownloader");
-  qApp->setApplicationVersion("2.0");
+  qApp->setApplicationVersion("2.1");
 
   // https://bugreports.qt.io/browse/QTBUG-40332
   qputenv("QT_BEARER_POLL_TIMEOUT", "2000000000");
