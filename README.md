@@ -1,6 +1,6 @@
 ## Changelog
+- 2020-08-21 v2.1 - [LINK](CHANGELOG.md)
 - 2020-04-24 v2.0 - [LINK](CHANGELOG.md)
-- 2020-04-08 v1.9 - [LINK](CHANGELOG.md)
 
 # zdownloader
 Zdownloader is a lightweight download manager running from command line.  
@@ -331,9 +331,9 @@ The zdm file also contains the number of remaining bytes to download.
 ##### If you like this project please give it a star ⭐. Thanks!
 
 ## Download:
-- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/linux-x86-64.zip)
-- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/arm-linux-gnueabihf.zip)
-- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/aarch64-linux-gnu.zip)
-- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x64.zip)
-- for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/win7_8_10-x86.zip)
+- for Linux x86-64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/linux-x86-64.zip)
+- for Linux ARM gnueabihf (eg. Raspberry Pi >= 3): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/arm-linux-gnueabihf.zip)
+- for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/aarch64-linux-gnu.zip)
+- for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/win7_8_10-x64.zip)
+- for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/win7_8_10-x86.zip)
 - for MacOS x64 (tested on Mojave): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/macos_x64.tgz)
