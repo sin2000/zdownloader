@@ -1,4 +1,8 @@
 # Changelog
+### Changes in v2.1 (2020-08-21):
+- fix for zippyshare
+- updated precompiled Qt libraries to 5.15
+
 ### Changes in v2.0 (2020-04-24):
 - added: javascript engine for extracting zippyshare links (https://github.com/sin2000/zdownloader/issues/8)
 - added: after checking all links, the program will change the links.txt file name to old_links.txt
