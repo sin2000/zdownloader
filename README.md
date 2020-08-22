@@ -336,4 +336,4 @@ The zdm file also contains the number of remaining bytes to download.
 - for Linux ARM aarch64 (eg. Odroid C2): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/aarch64-linux-gnu.zip)
 - for Windows 7, 8, 10 x64: [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/win7_8_10-x64.zip)
 - for Windows 7, 8, 10 x86(32bit): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/win7_8_10-x86.zip)
-- for MacOS x64 (tested on Mojave): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.0/macos_x64.tgz)
+- for MacOS x64 (tested on Mojave): [DOWNLOAD](https://github.com/sin2000/zdownloader/releases/download/2.1/macos_x64.tgz)
