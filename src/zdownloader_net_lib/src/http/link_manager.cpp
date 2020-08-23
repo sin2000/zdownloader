@@ -2,6 +2,7 @@
 #include "download_item_updater.h"
 #include "../model/download_item.h"
 #include "../settings/finished_downloads_settings.h"
+#include <qt_compat.h>
 #include <meta_object_ext.h>
 #include <QFile>
 #include <QDataStream>
@@ -128,7 +129,7 @@ void link_manager::abort_dl_item_updater_connections()
 
 void link_manager::parse_file_content(const QString & content)
 {
-  const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
+  const QStringList lines = content.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
 
   QStringList links;
   for(const auto & line : lines)
