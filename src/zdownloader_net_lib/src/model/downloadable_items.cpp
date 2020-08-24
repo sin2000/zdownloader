@@ -2,6 +2,7 @@
 #include "download_item.h"
 #include "../settings/finished_downloads_settings.h"
 #include "../utils/archive_filename_comparator.h"
+#include <qt_compat.h>
 #include <zd_logger.h>
 #include <QFile>
 #include <QDateTime>
@@ -296,14 +297,14 @@ void downloadable_items::save_to_file()
 
 void downloadable_items::parse_file_content(const QString & content, QList<download_item> * parsed_content) const
 {
-  const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
+  const QStringList lines = content.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
   parsed_content->reserve(lines.size());
 
   const int max_columns = 4;
   for(int i = 0; i < lines.size(); ++i)
   {
     const QString trimmed_line = lines.at(i).trimmed();
-    const QStringList words = trimmed_line.split(QChar::Tabulation, QString::SkipEmptyParts);
+    const QStringList words = trimmed_line.split(QChar::Tabulation, qt_compat::split_skip_empty_parts);
     if(words.size() == max_columns)
     {
       download_item dl_item;
