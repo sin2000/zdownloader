@@ -54,7 +54,7 @@ bool zippy_link_extractor::parse_html(const QString & html, const QString & src_
     return false;
   }
 
-  const QString script = prepare_script_from_html(html);
+  const QString script = prepare_script_from_html(html.mid(pos));
   if(script.isEmpty())
     return false;
 

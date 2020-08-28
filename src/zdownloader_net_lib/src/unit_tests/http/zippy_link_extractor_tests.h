@@ -163,6 +163,10 @@ private slots:
 
     const QString input =
         R"(
+        <script type="text/javascript">
+          var fake_script = "grumpy admin";
+        </script>
+
         <a id="dlbutton"  href="#">
         <span id="omg" class="2" style="display:none;"></span>
         <script type="text/javascript">
