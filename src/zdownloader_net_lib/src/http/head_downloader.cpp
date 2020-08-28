@@ -45,6 +45,8 @@ void head_downloader::download()
 
   connect(net_reply, &QNetworkReply::finished, this, &head_downloader::operation_finished);
 
+  enable_redirects_logging();
+
   conn_state->start();
 }
 

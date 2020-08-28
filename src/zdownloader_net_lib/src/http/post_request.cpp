@@ -41,6 +41,8 @@ void post_request::post()
   net_reply = nam->post(req, post_body);
   connect(net_reply, &QNetworkReply::finished, this, &post_request::operation_finished);
 
+  enable_redirects_logging();
+
   conn_state->start();
 }
 

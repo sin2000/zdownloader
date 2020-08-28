@@ -48,6 +48,8 @@ void get_request::download()
 
   connect(net_reply, &QNetworkReply::finished, this, &get_request::operation_finished);
 
+  enable_redirects_logging();
+
   conn_state->start();
 }
 

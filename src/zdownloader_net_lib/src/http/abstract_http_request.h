@@ -28,6 +28,7 @@ public:
   void add_request_header(const QNetworkReply::RawHeaderPair & request_header);
 
   bool is_busy() const;
+  void enable_redirects_logging();
 
 protected:
   static QString http_user_agent;
@@ -45,6 +46,8 @@ protected:
 private:
   virtual void operation_finished() = 0;
   void check_connection();
+
+  void log_redirect(const QUrl & redir_url);
 };
 
 #endif // ABSTRACT_HTTP_REQUEST_H

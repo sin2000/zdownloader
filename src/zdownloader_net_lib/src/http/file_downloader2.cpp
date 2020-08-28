@@ -134,6 +134,8 @@ void file_downloader2::download()
   connect(net_reply, &QNetworkReply::metaDataChanged, this, &file_downloader2::metadata_changed);
   connect(net_reply, &QNetworkReply::finished, this, &file_downloader2::operation_finished);
 
+  enable_redirects_logging();
+
   conn_state->start();
 
   download_time->start();

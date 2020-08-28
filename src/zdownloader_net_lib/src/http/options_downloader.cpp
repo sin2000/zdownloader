@@ -22,6 +22,8 @@ void options_downloader::download()
   net_reply = nam->sendCustomRequest(req, "OPTIONS");
   connect(net_reply, &QNetworkReply::finished, this, &options_downloader::operation_finished);
 
+  enable_redirects_logging();
+
   conn_state->start();
 }
 
