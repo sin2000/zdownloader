@@ -60,7 +60,7 @@ download_manager::download_manager(QNetworkAccessManager * global_nam, QObject *
 
 download_manager::~download_manager()
 {
-  for(auto dl : downloaders)
+  for(auto dl : qAsConst(downloaders))
     dl->save_and_abort_download();
 
   lnk_mgr->save_state(download_dir);
@@ -296,7 +296,7 @@ void download_manager::stop()
     dl_pre_post_job->abort_all_connections();
   lnk_mgr->abort_dl_item_updater_connections();
 
-  for(auto dl : downloaders)
+  for(auto dl : qAsConst(downloaders))
   {
     lnk_mgr->get_download_queue().stop(dl->get_curr_dl_item());
     dl->save_and_abort_download();
@@ -511,7 +511,7 @@ void download_manager::check_download_speed()
 {
   double speed_sum = 0;
 
-  for(const auto * dl : downloaders)
+  for(const auto * dl : qAsConst(downloaders))
   {
     speed_sum += dl->get_current_download_speed_mbps();
   }
@@ -526,7 +526,7 @@ void download_manager::check_download_speed()
 
 void download_manager::check_progress()
 {
-  for(const auto * dl : downloaders)
+  for(const auto * dl : qAsConst(downloaders))
   {
     qDebug() << dl->get_current_progress_msg();
   }
@@ -536,7 +536,7 @@ void download_manager::check_progress()
 
 void download_manager::check_remaining_stats()
 {
-  for(auto * dl : downloaders)
+  for(auto * dl : qAsConst(downloaders))
   {
     dl->update_remaining_bytes();
   }
@@ -557,7 +557,7 @@ void download_manager::reconnect_if_needed()
     qDebug() << "RECONNECTING - Avg speed" << QString::number(average_speed, 'f', 2) << "<=" << min_avg_speed_before_reconnect_mbps;
 
     check_progress_timer->stop();
-    for(auto dl : downloaders)
+    for(auto dl : qAsConst(downloaders))
     {
       dl->save_and_abort_download(true);
     }

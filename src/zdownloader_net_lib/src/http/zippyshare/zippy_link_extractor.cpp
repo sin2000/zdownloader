@@ -140,13 +140,13 @@ QString zippy_link_extractor::check_for_eval_errors(const QScriptValue & val) co
   if(script_engine->hasUncaughtException())
   {
     const QString script_err = script_engine->uncaughtException().toString();
-    const QString err_msg = QObject::tr("javascript_obj is invalid: %1").arg(script_err);
+    QString err_msg = QObject::tr("javascript_obj is invalid: %1").arg(script_err);
     return err_msg;
   }
 
   if(val.isValid() == false)
   {
-    const QString err_msg = QObject::tr("javascript_obj is not valid");
+    QString err_msg = QObject::tr("javascript_obj is not valid");
     return err_msg;
   }
 
@@ -254,7 +254,7 @@ QString zippy_link_extractor::html_get_attribute_val(const QString & html, const
   if(pos == -1)
     return "";
 
-  const QString val = ref.left(pos).toString();
+  QString val = ref.left(pos).toString();
 
   return val;
 }

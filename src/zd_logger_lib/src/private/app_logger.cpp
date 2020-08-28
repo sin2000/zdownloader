@@ -67,7 +67,7 @@ QString app_logger::format_msg(const msg_log_context & ctx) const
 
   //const QString function_or_path = func.isEmpty() ? ctx.file : func;
   //const QString line = QString::number(ctx.line);
-  const QString log_msg = QString("[%1][%2] %3").arg(curr_datetime, msg_type, ctx.msg);
+  QString log_msg = QString("[%1][%2] %3").arg(curr_datetime, msg_type, ctx.msg);
 
   return log_msg;
 }

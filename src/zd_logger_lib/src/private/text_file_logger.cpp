@@ -95,6 +95,6 @@ QString text_file_logger::format_log_text(qint64 timestamp_msecs, const QString 
   else
     out_text = tmp;
 
-  const QString log_msg = prefix + out_text;
+  QString log_msg = prefix + out_text;
   return log_msg;
 }

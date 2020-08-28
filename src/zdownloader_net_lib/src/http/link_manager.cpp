@@ -115,7 +115,7 @@ void link_manager::set_use_gdrive_api(bool gdrive_api_enabled)
 
 void link_manager::abort_dl_item_updater_connections()
 {
-  for(auto * updater : di_updaters)
+  for(auto * updater : qAsConst(di_updaters))
   {
     download_item * item = updater->get_updatable_item();
     if(item)

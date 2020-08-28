@@ -73,7 +73,7 @@ void downloadable_items::sort_and_add(const QList<download_item> & items)
 
   link_map.reserve(link_map.size() + sorted_items.size());
 
-  for(const auto & item : sorted_items)
+  for(const auto & item : qAsConst(sorted_items))
     add(item);
 
   save_to_file();
@@ -286,7 +286,7 @@ void downloadable_items::save_to_file()
     return;
 
   save_file->seek(0);
-  for(const auto & item : all_items)
+  for(const auto & item : qAsConst(all_items))
   {
     const QString item_line = item->to_string() + QChar::LineFeed;
     save_file->write(item_line.toUtf8());

@@ -121,7 +121,7 @@ void file_downloader2::download()
   QNetworkRequest req(url);
   req.setMaximumRedirectsAllowed(3);
   req.setHeader(QNetworkRequest::UserAgentHeader, http_user_agent);
-  for(const auto & header : req_headers)
+  for(const auto & header : qAsConst(req_headers))
   {
     req.setRawHeader(header.first, header.second);
   }

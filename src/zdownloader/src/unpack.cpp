@@ -107,7 +107,7 @@ void unpack::save_queue()
     return;
   }
 
-  for(const auto & item : unpack_queue)
+  for(const auto & item : qAsConst(unpack_queue))
   {
     const QString line = item + "\n";
     queue_file.write(line.toUtf8());

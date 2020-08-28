@@ -27,7 +27,7 @@ void head_downloader::download()
     req.setRawHeader("Cookie", req_cookies);
   if(req_headers.isEmpty() == false)
   {
-    for(const auto & header_pair : req_headers)
+    for(const auto & header_pair : qAsConst(req_headers))
       req.setRawHeader(header_pair.first, header_pair.second);
   }
 

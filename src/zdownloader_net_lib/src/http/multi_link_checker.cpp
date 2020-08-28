@@ -139,7 +139,7 @@ void multi_link_checker::download_next_link_info_error(const QString & error, se
     {
       if(queue.has_working_items() == false)
       {
-        for(auto * sv : services)
+        for(auto * sv : qAsConst(services))
           sv->abort_operation();
 
         emit download_error(error_code, error);
