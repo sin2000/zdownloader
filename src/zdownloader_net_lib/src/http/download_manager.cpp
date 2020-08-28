@@ -460,14 +460,17 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
   if(dl_pre_post_job && dl_pre_post_job->reset_in_use(item))
     lnk_mgr->get_download_queue().resume_first_paused();
 
+  bool skip_download = false;
   const QString last_filename_in_group = lnk_mgr->get_download_queue().finish(item);
   switch(item->get_status())
   {
     case download_item::download_status_remote_file_does_not_exists:
+      skip_download = true;
       qDebug() << "SKIPPING download. Remote file does not exists:" << item->get_filename();
       break;
 
     case download_item::download_status_finished_already_exists:
+      skip_download = true;
       qDebug() << "SKIPPING download. File already exists:" << item->get_filename();
       break;
 
@@ -497,7 +500,10 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
   else
   {
     qDebug() << "FINISHED - STARTING NEW";
-    start_next_download_timer->start();
+    if(skip_download)
+      start_next_download_timer->start(0);
+    else
+      start_next_download_timer->start();
   }
 
   if(sender)
