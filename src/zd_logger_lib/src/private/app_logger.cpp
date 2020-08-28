@@ -45,6 +45,12 @@ void app_logger::enable_debuglog()
 
 void app_logger::log_msg(const msg_log_context & ctx)
 {
+#ifdef ZD_RELEASE
+  // hide QNetwork warnings: '[W] QNetworkReplyImplPrivate::error: Internal problem, this method must only be called once'
+  if(ctx.msg_type == QtWarningMsg && ctx.msg.startsWith("QNetworkReplyImplPrivate::error:"))
+    return;
+#endif
+
   QByteArray text = format_msg(ctx).toUtf8();
 
   if(dlog)
