@@ -94,3 +94,19 @@ QString string_utils::bytes_to_human_readable_string(qint64 bytes)
   const QString ret = QString::number(result, 'f', 2) + units.at(unit_idx);
   return ret;
 }
+
+QString string_utils::remove_all_whitespace(const QString & text)
+{
+  const int len = text.size();
+
+  QString tmp;
+  tmp.reserve(len);
+
+  for(const auto & c : text)
+  {
+    if(c.isSpace() == false)
+      tmp.append(c);
+  }
+
+  return tmp;
+}

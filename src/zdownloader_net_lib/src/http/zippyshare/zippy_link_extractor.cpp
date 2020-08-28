@@ -54,9 +54,11 @@ bool zippy_link_extractor::parse_html(const QString & html, const QString & src_
     return false;
   }
 
-  const int after_dlbutton_pos = pos + id.size();
+  const QString script = prepare_script_from_html(html);
+  if(script.isEmpty())
+    return false;
 
-  return eval_javascript(html, after_dlbutton_pos);
+  return eval_javascript(script);
 }
 
 void zippy_link_extractor::check_file_existence(const QString & html)
@@ -67,18 +69,38 @@ void zippy_link_extractor::check_file_existence(const QString & html)
     last_error = file_does_not_exists;
 }
 
-bool zippy_link_extractor::eval_javascript(const QString & html, int after_dl_button_pos)
+QString zippy_link_extractor::prepare_script_from_html(const QString & html)
 {
-  const QString tmp = html.mid(after_dl_button_pos);
-  QString script = string_utils::pull_string(tmp, "<script type=\"text/javascript\">", "</script>");
+  QString script = string_utils::pull_string(html, "<script type=\"text/javascript\">", "</script>");
   if(script.size() > 4096)
-    return false;
-  script.replace("document.getElementById('omg').getAttribute('class')", "2");
-  script.replace("document.getElementById('dlbutton')", "zdownloader_sin2000");
-  script.replace("document.getElementById('fimage')", "ffk6f3l6ns9g834");
-  script.prepend("var zdownloader_sin2000 = {}; var ffk6f3l6ns9g834 = {};");
-  script += "zdownloader_sin2000.href;";
+    return "";
 
+  QString src_prepend =
+      R"(
+        var document = {};
+        document.getElementById = function(p) {
+          if (!this.hasOwnProperty(p)) { this[p] = { getAttribute : function(p) { return this[p] } } }
+          return this[p];
+        };
+      )";
+
+  const QStringList js_method_args = js_get_chained_methods_args(script, { "getElementById", "getAttribute" });
+  for(int i = 0; i < js_method_args.size(); i += 2)
+  {
+    const QString & id_name = js_method_args.at(0);
+    const QString & attr_name = js_method_args.at(1);
+    const QString attr_val = html_get_attribute_val(html, id_name, attr_name);
+    src_prepend += "document.getElementById('" + id_name + "')['" + attr_name + "'] = '" + attr_val + "';";
+  }
+
+  script.prepend(src_prepend);
+  script += "document.dlbutton.href;";
+
+  return script;
+}
+
+bool zippy_link_extractor::eval_javascript(const QString & script)
+{
   meta_object_ext::invoke_async(this, &zippy_link_extractor::schedule_abort_javascript_eval);
   script_engine->pushContext();
   const QScriptValue val = script_engine->evaluate(script);
@@ -129,4 +151,110 @@ QString zippy_link_extractor::check_for_eval_errors(const QScriptValue & val) co
   }
 
   return "";
+}
+
+QStringList zippy_link_extractor::js_get_chained_methods_args(const QString & js_src, const QStringList & methods)
+{
+  const QString script = string_utils::remove_all_whitespace(js_src);
+  QStringList args;
+  QStringRef js_fragment = &script;
+  while(js_fragment.isEmpty() == false)
+  {
+    args.append(js_find_next_chained_methods_args(js_fragment, methods, &js_fragment));
+  }
+
+  if(args.size() % methods.size())
+    return QStringList();
+
+  return args;
+}
+
+QStringList zippy_link_extractor::js_find_next_chained_methods_args(const QStringRef & src, const QStringList & methods, QStringRef * js_fragment)
+{
+  QStringList ret;
+  QStringRef ref = src;
+  const int methods_size = methods.size();
+  bool not_found = false;
+  for(int i = 0; i < methods_size; ++i)
+  {
+    const QString curr_method = '.' + methods[i] + '(';
+    int pos = -1;
+    if(i == 0)
+      pos = ref.indexOf(curr_method);
+    else
+      pos = ref.startsWith(curr_method) ? 0 : -1;
+
+    if(pos == -1)
+    {
+      if(i == 0)
+        ref.clear();
+      not_found = true;
+      break;
+    }
+
+    ref = ref.mid(pos + curr_method.size());
+    // 'a') - minimal
+    if((ref.size() < 4) || (ref.at(0) != '"' && ref.at(0) != '\''))
+    {
+      not_found = true;
+      break;
+    }
+
+    const auto delim_char = ref.at(0);
+    ref = ref.mid(1);
+    pos = ref.indexOf(delim_char);
+    if(pos == -1)
+    {
+      not_found = true;
+      break;
+    }
+
+    const QString val = ref.left(pos).toString();
+    ref = ref.mid(pos + 1);
+    if(ref.isEmpty() || ref.at(0) != ')' || val.isEmpty())
+    {
+      not_found = true;
+      break;
+    }
+
+    ret.append(val);
+
+    ref = ref.mid(1);
+  }
+
+  *js_fragment = ref;
+  if(not_found)
+    return QStringList();
+
+  return ret;
+}
+
+QString zippy_link_extractor::html_get_attribute_val(const QString & html, const QString & id_name, const QString & attr_name)
+{
+  const QString id = "id=\"" + id_name + "\"";
+
+  int pos = html.indexOf(id);
+  if(pos == -1)
+    return "";
+
+  pos = html.lastIndexOf('<', pos);
+  const int end = html.indexOf('>', pos + id.size());
+  if(pos == -1 || end == -1)
+    return "";
+
+  QStringRef ref = html.midRef(pos, end - pos);
+
+  const QString attr = attr_name + "=\"";
+  pos = ref.indexOf(attr);
+  if(pos == -1)
+    return "";
+
+  ref = ref.mid(pos + attr.size());
+  pos = ref.indexOf('"');
+  if(pos == -1)
+    return "";
+
+  const QString val = ref.left(pos).toString();
+
+  return val;
 }

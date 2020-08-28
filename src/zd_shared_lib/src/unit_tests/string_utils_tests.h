@@ -145,6 +145,13 @@ private slots:
 
     QCOMPARE(ret, "1.69TB");
   }
+
+  void remove_all_whitespace_returns_correct()
+  {
+    QString ret = string_utils::remove_all_whitespace(" test   two\n\r\n\tTHREE");
+
+    QCOMPARE(ret, "testtwoTHREE");
+  }
 };
 
 #endif // STRING_UTILS_TESTS_H
