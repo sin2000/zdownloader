@@ -3,6 +3,7 @@
 
 #include "../model/segment_metadata.h"
 #include <QObject>
+#include <QNetworkReply>
 
 class QNetworkAccessManager;
 class download_item;
@@ -42,12 +43,13 @@ private:
 
   setup_file_error setup_file(QString * error);
   void unsetup_file();
+  void remove_file();
   void compute_seg_metadata_list();
   void prepare_downloaders();
   void start_next_segment_download();
   void download_segment_started(file_downloader2 * sender);
   void download_segment_success(file_downloader2 * sender);
-  void download_segment_error(file_downloader2 * sender, const QString & error_text);
+  void download_segment_error(file_downloader2 * sender, const QString & error_text, QNetworkReply::NetworkError error_code);
   int get_first_pending_downloader_idx() const;
 
   download_item * curr_dl_item;

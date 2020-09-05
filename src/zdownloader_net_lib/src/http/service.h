@@ -13,7 +13,8 @@ public:
   enum fetch_error {
     file_does_not_exists,
     network_error,
-    unknown_error
+    unknown_error,
+    not_found_404_error
   };
 
   service(QObject * parent = nullptr);

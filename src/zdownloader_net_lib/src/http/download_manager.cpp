@@ -385,17 +385,11 @@ void download_manager::pre_job_finished(download_item * item, bool success, bool
   }
 }
 
-void download_manager::refresh_link_info_finished(service::fetch_error error_code, const QString & error_text, download_item * item)
+void download_manager::refresh_link_info_finished(download_item * item)
 {
-  if(error_text.isEmpty() == false)
+  if(item->get_status() != download_item::download_status_pending)
   {
-    if(error_code == service::file_does_not_exists)
-    {
-      item->set_status(download_item::download_status_remote_file_does_not_exists);
-      file_download_finished(nullptr, "", item);
-    }
-    else
-      file_download_finished(nullptr, error_text, item);
+    file_download_finished(nullptr, "", item);
 
     return;
   }
@@ -472,6 +466,11 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
     case download_item::download_status_finished_already_exists:
       skip_download = true;
       qDebug() << "SKIPPING download. File already exists:" << item->get_filename();
+      break;
+
+    case download_item::download_status_remote_file_not_found:
+      skip_download = true;
+      qDebug() << "SKIPPING download. Remote file not found-404:" << item->get_filename();
       break;
 
     default:

@@ -25,13 +25,13 @@ public:
   void set_max_ms_before_check_link_again_on_error(int ms);
 
 signals:
-  void download_links_info_success(const QList<download_item> & infos);
-  void download_error(service::fetch_error error_code, const QString & error_text);
+  void download_links_info_finished(const QList<download_item> & infos);
 
 private:
   void download_next_link_info();
   void download_next_link_info_success(const download_item & info, service * sender);
   void download_next_link_info_error(const QString & error, service::fetch_error error_code, service * sender);
+  void set_dl_item_status(download_item * item, service::fetch_error fetch_err) const;
 
   QNetworkAccessManager * nam;
   QList<download_item> download_items;

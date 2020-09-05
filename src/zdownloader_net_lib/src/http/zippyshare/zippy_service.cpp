@@ -102,7 +102,11 @@ void zippy_service::get_head_success(head_downloader * sender)
   emit fetch_download_info_error("zippy_service error: file_size_bytes <= 0 url: " + sender->get_url_as_string(), service::unknown_error, this);
 }
 
-void zippy_service::get_head_error_occured(head_downloader * /*sender*/, QNetworkReply::NetworkError /*err_code*/, const QString & err_text)
+void zippy_service::get_head_error_occured(head_downloader * /*sender*/, QNetworkReply::NetworkError err_code, const QString & err_text)
 {
-  emit fetch_download_info_error(err_text, service::network_error, this);
+  service::fetch_error ferr = service::network_error;
+  if(err_code == QNetworkReply::ContentNotFoundError)
+    ferr = service::not_found_404_error;
+
+  emit fetch_download_info_error(err_text, ferr, this);
 }

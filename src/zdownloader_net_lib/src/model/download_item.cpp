@@ -89,6 +89,9 @@ QChar download_item::get_status_as_char() const
 
     case download_status_remote_file_does_not_exists:
       return 'R';
+
+    case download_status_remote_file_not_found:
+      return 'N';
   }
 
   return 'P';
