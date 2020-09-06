@@ -9,7 +9,8 @@ increasing_timer::increasing_timer(QObject * parent)
    increase_from_msec(0),
    increase_to_msec(0),
    increase_step_msec(1000),
-   reset_after_msec(0)
+   reset_after_msec(0),
+   interval_msec(0)
 {
   timer->setSingleShot(true);
 

@@ -2,6 +2,7 @@
 #include "download_item_updater.h"
 #include "../model/download_item.h"
 #include "../settings/finished_downloads_settings.h"
+#include <qt_compat.h>
 #include <meta_object_ext.h>
 #include <QFile>
 #include <QDataStream>
@@ -62,9 +63,9 @@ void link_manager::update_download_item(download_item * item)
   updater->start_update(item);
 }
 
-void link_manager::download_item_updater_finished(download_item_updater * sender, service::fetch_error error_code, const QString & error_text, download_item * item)
+void link_manager::download_item_updater_finished(download_item_updater * sender, download_item * item)
 {
-  emit update_download_item_finished(error_code, error_text, item);
+  emit update_download_item_finished(item);
 
   sender->deleteLater();
   di_updaters.remove(sender);
@@ -114,7 +115,7 @@ void link_manager::set_use_gdrive_api(bool gdrive_api_enabled)
 
 void link_manager::abort_dl_item_updater_connections()
 {
-  for(auto * updater : di_updaters)
+  for(auto * updater : qAsConst(di_updaters))
   {
     download_item * item = updater->get_updatable_item();
     if(item)
@@ -128,7 +129,7 @@ void link_manager::abort_dl_item_updater_connections()
 
 void link_manager::parse_file_content(const QString & content)
 {
-  const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
+  const QStringList lines = content.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
 
   QStringList links;
   for(const auto & line : lines)
@@ -213,8 +214,7 @@ void link_manager::check_links_on_server()
   link_checker->set_use_gdrive_api(use_gdrive_api);
   link_checker->set_zippyshare_fetch_file_size(true);
 
-  connect(link_checker, &multi_link_checker::download_links_info_success, this, &link_manager::check_links_on_server_success);
-  connect(link_checker, &multi_link_checker::download_error, this, &link_manager::check_links_on_server_error);
+  connect(link_checker, &multi_link_checker::download_links_info_finished, this, &link_manager::check_links_on_server_finished);
 
   curr_links_group_idx = 0;
   check_next_links_on_server();
@@ -237,20 +237,28 @@ void link_manager::check_next_links_on_server()
   }
 }
 
-void link_manager::check_links_on_server_success(const QList<download_item> & infos)
+void link_manager::check_links_on_server_finished(const QList<download_item> & infos)
 {
   ++curr_links_group_idx;
 
-  download_queue.sort_and_add(infos);
+  QList<download_item> checked_items;
+  checked_items.reserve(infos.size());
+  QString err_msg = "Skipped downloads:\n";
+  for(const auto & item : qAsConst(infos))
+  {
+    const auto status = item.get_status();
+    if(status == download_item::download_status_pending)
+      checked_items.append(item);
+    else
+      err_msg += item.get_link() + " - " + item.get_status_as_char() + '\n';
+  }
 
-  meta_object_ext::invoke_async(this, &link_manager::check_next_links_on_server);
-}
+  if(checked_items.size() < infos.size())
+    qDebug() << err_msg;
 
-void link_manager::check_links_on_server_error(service::fetch_error /*error_code*/, const QString & error_text)
-{
-  qDebug() << "LINK CHECKER: skipped one link. Error:" << error_text;
+  if(checked_items.isEmpty() == false)
+    download_queue.sort_and_add(checked_items);
 
-  ++curr_links_group_idx;
   meta_object_ext::invoke_async(this, &link_manager::check_next_links_on_server);
 }
 

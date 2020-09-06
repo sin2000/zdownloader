@@ -37,7 +37,7 @@ void get_request::download()
 
   if(req_headers.isEmpty() == false)
   {
-    for(const auto & header_pair : req_headers)
+    for(const auto & header_pair : qAsConst(req_headers))
       req.setRawHeader(header_pair.first, header_pair.second);
   }
 
@@ -47,6 +47,8 @@ void get_request::download()
     net_reply = nam->get(req);
 
   connect(net_reply, &QNetworkReply::finished, this, &get_request::operation_finished);
+
+  enable_redirects_logging();
 
   conn_state->start();
 }
@@ -59,8 +61,6 @@ void get_request::operation_finished()
   const auto err_code = net_reply->error();
   if(err_code != QNetworkReply::NoError)
   {
-    const QString err_text = tr("HTTP: %1 error - %2").arg(req_verb, net_reply->errorString());
-
     net_reply->deleteLater();
 
     emit error_occured(this, err_code);

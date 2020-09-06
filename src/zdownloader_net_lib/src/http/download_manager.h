@@ -76,7 +76,7 @@ private:
   void start_next_download();
   void refresh_link_info();
   void pre_job_finished(download_item * item, bool success, bool should_pause_item);
-  void refresh_link_info_finished(service::fetch_error error_code, const QString & error_text, download_item * item);
+  void refresh_link_info_finished(download_item * item);
   void start_file_download(download_item * item);
   void file_download_finished(dl_item_downloader * sender, const QString & err_text, download_item * item);
   void file_download_success(dl_item_downloader * sender, download_item * item);

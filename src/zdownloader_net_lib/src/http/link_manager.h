@@ -28,7 +28,7 @@ public:
 
 signals:
   void load_state_finished(const QString & error_text = "");
-  void update_download_item_finished(service::fetch_error error_code, const QString & error_text, download_item * item);
+  void update_download_item_finished(download_item * item);
 
 private:
   bool load_links_from_file();
@@ -36,11 +36,10 @@ private:
   bool validate_link(const QString & link);
   void check_links_on_server();
   void check_next_links_on_server();
-  void check_links_on_server_success(const QList<download_item> & infos);
-  void check_links_on_server_error(service::fetch_error error_code, const QString & error_text);
+  void check_links_on_server_finished(const QList<download_item> & infos);
   void move_links_file();
 
-  void download_item_updater_finished(download_item_updater * sender, service::fetch_error error_code, const QString & error_text, download_item * item);
+  void download_item_updater_finished(download_item_updater * sender, download_item * item);
 
   void load_segments_ends(const QString & download_dir);
   void save_segments_ends(const QString & download_dir) const;

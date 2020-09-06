@@ -27,7 +27,7 @@ void head_downloader::download()
     req.setRawHeader("Cookie", req_cookies);
   if(req_headers.isEmpty() == false)
   {
-    for(const auto & header_pair : req_headers)
+    for(const auto & header_pair : qAsConst(req_headers))
       req.setRawHeader(header_pair.first, header_pair.second);
   }
 
@@ -44,6 +44,8 @@ void head_downloader::download()
   }
 
   connect(net_reply, &QNetworkReply::finished, this, &head_downloader::operation_finished);
+
+  enable_redirects_logging();
 
   conn_state->start();
 }

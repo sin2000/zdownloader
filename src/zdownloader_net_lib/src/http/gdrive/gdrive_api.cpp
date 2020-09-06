@@ -157,7 +157,7 @@ void gdrive_api::list_files_success(get_request * sender, const QByteArray & res
   QList<gdrive_file> files;
   const QJsonDocument doc = QJsonDocument::fromJson(response);
   const QJsonArray arr = doc["files"].toArray();
-  for(const auto item : arr)
+  for(const auto & item : arr)
   {
     if(item["kind"] == "drive#file")
     {

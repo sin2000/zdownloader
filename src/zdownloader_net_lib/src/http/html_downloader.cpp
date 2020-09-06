@@ -22,6 +22,7 @@ void html_downloader::download()
   req.setRawHeader("Accept-Encoding", "identity");
 
   net_reply = nam->get(req);
+  enable_redirects_logging();
   connect(net_reply, &QNetworkReply::finished, this, &html_downloader::operation_finished);
 
   conn_state->start();

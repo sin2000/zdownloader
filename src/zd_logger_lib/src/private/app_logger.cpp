@@ -45,6 +45,12 @@ void app_logger::enable_debuglog()
 
 void app_logger::log_msg(const msg_log_context & ctx)
 {
+#ifdef ZD_RELEASE
+  // hide QNetwork warnings: '[W] QNetworkReplyImplPrivate::error: Internal problem, this method must only be called once'
+  if(ctx.msg_type == QtWarningMsg && ctx.msg.startsWith("QNetworkReplyImplPrivate::error:"))
+    return;
+#endif
+
   QByteArray text = format_msg(ctx).toUtf8();
 
   if(dlog)
@@ -67,7 +73,7 @@ QString app_logger::format_msg(const msg_log_context & ctx) const
 
   //const QString function_or_path = func.isEmpty() ? ctx.file : func;
   //const QString line = QString::number(ctx.line);
-  const QString log_msg = QString("[%1][%2] %3").arg(curr_datetime, msg_type, ctx.msg);
+  QString log_msg = QString("[%1][%2] %3").arg(curr_datetime, msg_type, ctx.msg);
 
   return log_msg;
 }

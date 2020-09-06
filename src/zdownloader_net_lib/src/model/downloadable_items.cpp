@@ -2,6 +2,7 @@
 #include "download_item.h"
 #include "../settings/finished_downloads_settings.h"
 #include "../utils/archive_filename_comparator.h"
+#include <qt_compat.h>
 #include <zd_logger.h>
 #include <QFile>
 #include <QDateTime>
@@ -72,7 +73,7 @@ void downloadable_items::sort_and_add(const QList<download_item> & items)
 
   link_map.reserve(link_map.size() + sorted_items.size());
 
-  for(const auto & item : sorted_items)
+  for(const auto & item : qAsConst(sorted_items))
     add(item);
 
   save_to_file();
@@ -285,7 +286,7 @@ void downloadable_items::save_to_file()
     return;
 
   save_file->seek(0);
-  for(const auto & item : all_items)
+  for(const auto & item : qAsConst(all_items))
   {
     const QString item_line = item->to_string() + QChar::LineFeed;
     save_file->write(item_line.toUtf8());
@@ -296,14 +297,14 @@ void downloadable_items::save_to_file()
 
 void downloadable_items::parse_file_content(const QString & content, QList<download_item> * parsed_content) const
 {
-  const QStringList lines = content.split(QChar::LineFeed, QString::SkipEmptyParts);
+  const QStringList lines = content.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
   parsed_content->reserve(lines.size());
 
   const int max_columns = 4;
   for(int i = 0; i < lines.size(); ++i)
   {
     const QString trimmed_line = lines.at(i).trimmed();
-    const QStringList words = trimmed_line.split(QChar::Tabulation, QString::SkipEmptyParts);
+    const QStringList words = trimmed_line.split(QChar::Tabulation, qt_compat::split_skip_empty_parts);
     if(words.size() == max_columns)
     {
       download_item dl_item;

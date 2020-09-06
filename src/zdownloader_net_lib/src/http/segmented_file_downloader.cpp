@@ -231,6 +231,14 @@ void segmented_file_downloader::unsetup_file()
   shared_file->close();
 }
 
+void segmented_file_downloader::remove_file()
+{
+  shared_file->close();
+
+  if(shared_file->remove() == false)
+    qDebug() << "Could not remove file" << shared_file->fileName();
+}
+
 void segmented_file_downloader::compute_seg_metadata_list()
 {
   if(curr_dl_item->is_segment_ends_empty() == false)
@@ -343,13 +351,19 @@ void segmented_file_downloader::download_segment_success(file_downloader2 * send
   }
 }
 
-void segmented_file_downloader::download_segment_error(file_downloader2 * /*sender*/, const QString & error_text)
+void segmented_file_downloader::download_segment_error(file_downloader2 * /*sender*/, const QString & error_text, QNetworkReply::NetworkError error_code)
 {
   --active_segments;
   if(all_seg_error_state == false)
   {
     all_seg_error_state = true;
     save_and_abort_download();
+
+    if(error_code == QNetworkReply::ContentNotFoundError)
+    {
+      curr_dl_item->set_status(download_item::download_status_remote_file_not_found);
+      remove_file();
+    }
 
     emit download_finished(error_text, curr_dl_item->get_direct_download_link());
   }

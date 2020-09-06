@@ -60,7 +60,7 @@ download_manager::download_manager(QNetworkAccessManager * global_nam, QObject *
 
 download_manager::~download_manager()
 {
-  for(auto dl : downloaders)
+  for(auto dl : qAsConst(downloaders))
     dl->save_and_abort_download();
 
   lnk_mgr->save_state(download_dir);
@@ -296,7 +296,7 @@ void download_manager::stop()
     dl_pre_post_job->abort_all_connections();
   lnk_mgr->abort_dl_item_updater_connections();
 
-  for(auto dl : downloaders)
+  for(auto dl : qAsConst(downloaders))
   {
     lnk_mgr->get_download_queue().stop(dl->get_curr_dl_item());
     dl->save_and_abort_download();
@@ -385,17 +385,11 @@ void download_manager::pre_job_finished(download_item * item, bool success, bool
   }
 }
 
-void download_manager::refresh_link_info_finished(service::fetch_error error_code, const QString & error_text, download_item * item)
+void download_manager::refresh_link_info_finished(download_item * item)
 {
-  if(error_text.isEmpty() == false)
+  if(item->get_status() != download_item::download_status_pending)
   {
-    if(error_code == service::file_does_not_exists)
-    {
-      item->set_status(download_item::download_status_remote_file_does_not_exists);
-      file_download_finished(nullptr, "", item);
-    }
-    else
-      file_download_finished(nullptr, error_text, item);
+    file_download_finished(nullptr, "", item);
 
     return;
   }
@@ -460,15 +454,23 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
   if(dl_pre_post_job && dl_pre_post_job->reset_in_use(item))
     lnk_mgr->get_download_queue().resume_first_paused();
 
+  bool skip_download = false;
   const QString last_filename_in_group = lnk_mgr->get_download_queue().finish(item);
   switch(item->get_status())
   {
     case download_item::download_status_remote_file_does_not_exists:
+      skip_download = true;
       qDebug() << "SKIPPING download. Remote file does not exists:" << item->get_filename();
       break;
 
     case download_item::download_status_finished_already_exists:
+      skip_download = true;
       qDebug() << "SKIPPING download. File already exists:" << item->get_filename();
+      break;
+
+    case download_item::download_status_remote_file_not_found:
+      skip_download = true;
+      qDebug() << "SKIPPING download. Remote file not found-404:" << item->get_filename();
       break;
 
     default:
@@ -497,7 +499,10 @@ void download_manager::file_download_success(dl_item_downloader * sender, downlo
   else
   {
     qDebug() << "FINISHED - STARTING NEW";
-    start_next_download_timer->start();
+    if(skip_download)
+      start_next_download_timer->start(0);
+    else
+      start_next_download_timer->start();
   }
 
   if(sender)
@@ -511,7 +516,7 @@ void download_manager::check_download_speed()
 {
   double speed_sum = 0;
 
-  for(const auto * dl : downloaders)
+  for(const auto * dl : qAsConst(downloaders))
   {
     speed_sum += dl->get_current_download_speed_mbps();
   }
@@ -526,7 +531,7 @@ void download_manager::check_download_speed()
 
 void download_manager::check_progress()
 {
-  for(const auto * dl : downloaders)
+  for(const auto * dl : qAsConst(downloaders))
   {
     qDebug() << dl->get_current_progress_msg();
   }
@@ -536,7 +541,7 @@ void download_manager::check_progress()
 
 void download_manager::check_remaining_stats()
 {
-  for(auto * dl : downloaders)
+  for(auto * dl : qAsConst(downloaders))
   {
     dl->update_remaining_bytes();
   }
@@ -557,7 +562,7 @@ void download_manager::reconnect_if_needed()
     qDebug() << "RECONNECTING - Avg speed" << QString::number(average_speed, 'f', 2) << "<=" << min_avg_speed_before_reconnect_mbps;
 
     check_progress_timer->stop();
-    for(auto dl : downloaders)
+    for(auto dl : qAsConst(downloaders))
     {
       dl->save_and_abort_download(true);
     }

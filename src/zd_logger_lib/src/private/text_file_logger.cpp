@@ -1,4 +1,5 @@
 #include "text_file_logger.h"
+#include <qt_compat.h>
 #include <meta_object_ext.h>
 #include <QDateTime>
 
@@ -87,12 +88,13 @@ QString text_file_logger::format_log_text(qint64 timestamp_msecs, const QString 
   QString tmp = raw_text;
   // remove all CR
   tmp.remove(QChar::CarriageReturn);
-  const QStringList line_list = tmp.split(QChar::LineFeed, QString::SkipEmptyParts);
+
+  const QStringList line_list = tmp.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
   if(line_list.size() > 1)
     out_text = line_list.join(QChar::LineFeed + QString(prefix.size(), QChar::Space));
   else
     out_text = tmp;
 
-  const QString log_msg = prefix + out_text;
+  QString log_msg = prefix + out_text;
   return log_msg;
 }

@@ -121,7 +121,7 @@ void file_downloader2::download()
   QNetworkRequest req(url);
   req.setMaximumRedirectsAllowed(3);
   req.setHeader(QNetworkRequest::UserAgentHeader, http_user_agent);
-  for(const auto & header : req_headers)
+  for(const auto & header : qAsConst(req_headers))
   {
     req.setRawHeader(header.first, header.second);
   }
@@ -133,6 +133,8 @@ void file_downloader2::download()
   connect(net_reply, &QNetworkReply::downloadProgress, this, &file_downloader2::download_progress);
   connect(net_reply, &QNetworkReply::metaDataChanged, this, &file_downloader2::metadata_changed);
   connect(net_reply, &QNetworkReply::finished, this, &file_downloader2::operation_finished);
+
+  enable_redirects_logging();
 
   conn_state->start();
 
@@ -150,17 +152,22 @@ void file_downloader2::download_progress(qint64 bytes_received, qint64 /*bytes_t
 void file_downloader2::metadata_changed()
 {
   //disconnect(net_reply, &QNetworkReply::metaDataChanged, this, &file_downloader2::metadata_changed);
-
   const QString unexpected_content_type = "text/";
   const QString content_type = net_reply->header(QNetworkRequest::ContentTypeHeader).toString().trimmed();
   if(content_type.startsWith(unexpected_content_type))
   {
     wrong_content_type = true;
-    const QString err_text = tr("HTTP: FILE download error (wrong content type; unexpected start with %1; got: %2; file: %3)")
-        .arg(unexpected_content_type, content_type, file_name);
-    qDebug() << err_text;
 
-    QTimer::singleShot(0, net_reply, &QNetworkReply::abort);
+    const int http_status = net_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if(http_status != 404)
+    {
+      const QString err_text = tr("HTTP: FILE download error (wrong content type; unexpected start with %1; got: %2; file: %3)")
+          .arg(unexpected_content_type, content_type, file_name);
+      qDebug() << err_text;
+
+      QTimer::singleShot(0, net_reply, &QNetworkReply::abort);
+    }
+
     return;
   }
 
@@ -185,7 +192,7 @@ void file_downloader2::operation_finished()
   if(net_reply->error() != QNetworkReply::NoError)
   {
     const QString err_text = "HTTP: download error for FILE " + file_name + ". Error: " + net_reply->errorString();
-    emit download_error(this, err_text);
+    emit download_error(this, err_text, net_reply->error());
 
     net_reply->deleteLater();
     return;

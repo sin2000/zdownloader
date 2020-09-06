@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QNetworkReply>
 #include <QList>
+#include <memory>
 
 class logged_nam;
 class post_request;

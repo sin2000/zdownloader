@@ -55,11 +55,13 @@ INCLUDEPATH += ./src
 
 SOURCES += \
     src/meta_object_ext.cpp \
+    src/qt_compat.cpp \
     src/string_utils.cpp \
     src/increasing_timer.cpp
 
 HEADERS += \
     src/meta_object_ext.h \
+    src/qt_compat.h \
     src/zd_shared_lib_global.h \
     src/name_to_object_binder.h \
     src/string_utils.h \

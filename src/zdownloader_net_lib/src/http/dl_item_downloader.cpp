@@ -20,5 +20,11 @@ void dl_item_downloader::start_download_item(download_item * item, int max_seg, 
 
 void dl_item_downloader::file_download_finished(const QString & error_text, const QString & /*url*/)
 {
-  emit item_download_finished(this, error_text, current_item);
+  QString err_txt;
+  if(current_item->get_status() != download_item::download_status_finished && current_item->get_status() != download_item::download_status_pending)
+    err_txt = "";
+  else
+    err_txt = error_text;
+
+  emit item_download_finished(this, err_txt, current_item);
 }

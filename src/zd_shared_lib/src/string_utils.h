@@ -13,6 +13,7 @@ public:
   static QString pull_string(const QString & src, const QString & start, const QString & end = "");
   static QString seconds_to_string(qint64 seconds);
   static QString bytes_to_human_readable_string(qint64 bytes);
+  static QString remove_all_whitespace(const QString & text);
 };
 
 #endif // STRING_UTILS_H

@@ -8,8 +8,7 @@ download_item_updater::download_item_updater(int max_ms_before_check_link_again_
    link_checker(new multi_link_checker(global_nam, this)),
    updatable_item(nullptr)
 {
-  connect(link_checker, &multi_link_checker::download_links_info_success, this, &download_item_updater::download_links_info_success);
-  connect(link_checker, &multi_link_checker::download_error, this, &download_item_updater::download_error);
+  connect(link_checker, &multi_link_checker::download_links_info_finished, this, &download_item_updater::download_links_info_finished);
   link_checker->set_max_ms_before_check_link_again_on_error(max_ms_before_check_link_again_on_error);
 }
 
@@ -33,7 +32,7 @@ download_item * download_item_updater::get_updatable_item() const
   return updatable_item;
 }
 
-void download_item_updater::download_links_info_success(const QList<download_item> & infos)
+void download_item_updater::download_links_info_finished(const QList<download_item> & infos)
 {
   if(infos.isEmpty() == false)
   {
@@ -42,16 +41,13 @@ void download_item_updater::download_links_info_success(const QList<download_ite
     updatable_item->set_direct_download_link(item.get_direct_download_link());
     if(item.get_file_size_bytes() > 0)
       updatable_item->set_file_size_bytes(item.get_file_size_bytes());
+
+    updatable_item->set_status(item.get_status());
   }
   else
   {
     qDebug() << "WARNING: links_infos is empty! This shouldnt happen. Application is broken";
   }
 
-  emit update_finished(this, service::unknown_error, "", updatable_item);
-}
-
-void download_item_updater::download_error(service::fetch_error error_code, const QString & error_text)
-{
-  emit update_finished(this, error_code, error_text, updatable_item);
+  emit update_finished(this, updatable_item);
 }

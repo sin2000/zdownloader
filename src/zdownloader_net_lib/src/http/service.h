@@ -13,7 +13,8 @@ public:
   enum fetch_error {
     file_does_not_exists,
     network_error,
-    unknown_error
+    unknown_error,
+    not_found_404_error
   };
 
   service(QObject * parent = nullptr);
@@ -24,7 +25,7 @@ public:
 
 signals:
   void fetch_download_info_success(const download_item & info, service * sender);
-  void fetch_download_info_error(const QString & error, fetch_error error_code, service * sender);
+  void fetch_download_info_error(const QString & error, service::fetch_error error_code, service * sender);
 
 protected:
   virtual void fetch_info() = 0;

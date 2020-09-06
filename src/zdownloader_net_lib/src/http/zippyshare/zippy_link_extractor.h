@@ -27,10 +27,15 @@ public:
 
 private:
   void check_file_existence(const QString & html);
-  bool eval_javascript(const QString & html, int after_dl_button_pos);
+  QString prepare_script_from_html(const QString & html);
+  bool eval_javascript(const QString & script);
   void schedule_abort_javascript_eval();
   void abort_javascript_eval();
   QString check_for_eval_errors(const QScriptValue & val) const;
+
+  QStringList js_get_chained_methods_args(const QString & js_src, const QStringList & methods);
+  QStringList js_find_next_chained_methods_args(const QStringRef & src, const QStringList & methods, QStringRef * js_fragment);
+  QString html_get_attribute_val(const QString & html, const QString & id_name, const QString & attr_name);
 
   static std::unique_ptr<QScriptEngine> script_engine;
   QString source_link;

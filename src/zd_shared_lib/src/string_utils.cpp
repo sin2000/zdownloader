@@ -83,7 +83,7 @@ QString string_utils::bytes_to_human_readable_string(qint64 bytes)
 {
   static const QStringList units { "B", "KB", "MB", "GB", "TB", "EB" };
 
-  double result = bytes;
+  double result = static_cast<double>(bytes);
   int unit_idx = 0;
   while(unit_idx < units.size() && result >= 1024)
   {
@@ -91,6 +91,22 @@ QString string_utils::bytes_to_human_readable_string(qint64 bytes)
     ++unit_idx;
   }
 
-  const QString ret = QString::number(result, 'f', 2) + units.at(unit_idx);
+  QString ret = QString::number(result, 'f', 2) + units.at(unit_idx);
   return ret;
+}
+
+QString string_utils::remove_all_whitespace(const QString & text)
+{
+  const int len = text.size();
+
+  QString tmp;
+  tmp.reserve(len);
+
+  for(const auto & c : text)
+  {
+    if(c.isSpace() == false)
+      tmp.append(c);
+  }
+
+  return tmp;
 }

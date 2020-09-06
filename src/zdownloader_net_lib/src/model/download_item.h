@@ -12,7 +12,8 @@ public:
     download_status_finished,
 
     download_status_finished_already_exists,
-    download_status_remote_file_does_not_exists
+    download_status_remote_file_does_not_exists,
+    download_status_remote_file_not_found
   };
 
   download_item();

@@ -17,11 +17,10 @@ public:
   download_item * get_updatable_item() const;
 
 signals:
-  void update_finished(download_item_updater * sender, service::fetch_error error_code, const QString & error_text, download_item * updated_item);
+  void update_finished(download_item_updater * sender, download_item * updated_item);
 
 private:
-  void download_links_info_success(const QList<download_item> & infos);
-  void download_error(service::fetch_error error_code, const QString & error_text);
+  void download_links_info_finished(const QList<download_item> & infos);
 
   multi_link_checker * link_checker;
   download_item * updatable_item;

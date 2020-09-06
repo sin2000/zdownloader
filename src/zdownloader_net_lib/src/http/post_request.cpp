@@ -34,12 +34,14 @@ void post_request::post()
     req.setRawHeader("Cookie", req_cookies);
   if(req_headers.isEmpty() == false)
   {
-    for(const auto & header_pair : req_headers)
+    for(const auto & header_pair : qAsConst(req_headers))
       req.setRawHeader(header_pair.first, header_pair.second);
   }
 
   net_reply = nam->post(req, post_body);
   connect(net_reply, &QNetworkReply::finished, this, &post_request::operation_finished);
+
+  enable_redirects_logging();
 
   conn_state->start();
 }
@@ -52,8 +54,6 @@ void post_request::operation_finished()
   const auto err_code = net_reply->error();
   if(err_code != QNetworkReply::NoError)
   {
-    const QString err_text = tr("HTTP: POST error - %1").arg(net_reply->errorString());
-
     net_reply->deleteLater();
 
     emit error_occured(this, err_code);

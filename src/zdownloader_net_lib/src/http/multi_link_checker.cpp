@@ -58,6 +58,13 @@ void multi_link_checker::set_max_ms_before_check_link_again_on_error(int ms)
 
 void multi_link_checker::download_next_link_info()
 {
+  if(queue.has_pending_items() == false && queue.has_working_items() == false)
+  {
+    download_restart_timer->stop();
+    emit download_links_info_finished(download_items);
+    return;
+  }
+
   if(queue.has_pending_items() == false)
     return;
 
@@ -105,18 +112,7 @@ void multi_link_checker::download_next_link_info_success(const download_item & i
   download_items.append(info);
   queue.finish(info.get_link());
 
-  if(queue.has_pending_items() == false)
-  {
-    if(queue.has_working_items() == false)
-    {
-      download_restart_timer->stop();
-      emit download_links_info_success(download_items);
-    }
-  }
-  else
-  {
-    download_restart_timer->start(0);
-  }
+  download_restart_timer->start(0);
 
   sender->deleteLater();
   services.remove(sender);
@@ -125,7 +121,7 @@ void multi_link_checker::download_next_link_info_success(const download_item & i
 void multi_link_checker::download_next_link_info_error(const QString & error, service::fetch_error error_code, service * sender)
 {
   --download_connections;
-  if(error_code == service::network_error)
+  if(error_code == service::network_error || error_code == service::unknown_error)
   {
     queue.stop(sender->get_base_url());
     qDebug() << "Restarting download link info. Error:" << error;
@@ -133,25 +129,33 @@ void multi_link_checker::download_next_link_info_error(const QString & error, se
   }
   else
   {
-    // file does not exists or unknown error:
-    queue.finish(sender->get_base_url());
-    if(queue.has_pending_items() == false)
-    {
-      if(queue.has_working_items() == false)
-      {
-        for(auto * sv : services)
-          sv->abort_operation();
+    qDebug() << "multi_link_checker -" << error << "[Link:" << sender->get_base_url() + "]";
 
-        emit download_error(error_code, error);
-      }
-    }
-    else
-    {
-      qDebug() << "LINK CHECKER: skipped one link. Error:" << error << "Link:" << sender->get_base_url();
-      download_restart_timer->start(0);
-    }
+    download_item item;
+    item.set_link(sender->get_base_url());
+    set_dl_item_status(&item, error_code);
+    download_items.append(item);
+
+    queue.finish(sender->get_base_url());
+    download_restart_timer->start(0);
   }
 
   sender->deleteLater();
   services.remove(sender);
+}
+
+void multi_link_checker::set_dl_item_status(download_item * item, service::fetch_error fetch_err) const
+{
+  switch(fetch_err)
+  {
+    case service::file_does_not_exists:
+      item->set_status(download_item::download_status_remote_file_does_not_exists);
+      break;
+    case service::not_found_404_error:
+      item->set_status(download_item::download_status_remote_file_not_found);
+      break;
+
+    default:
+      break;
+  }
 }

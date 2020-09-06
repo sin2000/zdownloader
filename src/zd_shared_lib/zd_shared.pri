@@ -73,7 +73,7 @@ win32 {
 
 unix {
     DEFINES += SYSTEM_UNIX    
-    QMAKE_CXXFLAGS += -Wpedantic -Wshadow -ftrapv
+    QMAKE_CXXFLAGS += -Wpedantic -Wshadow -ftrapv -Wall
 
     # release
     #QMAKE_CXXFLAGS_RELEASE += -finline-functions -fstack-protector-strong

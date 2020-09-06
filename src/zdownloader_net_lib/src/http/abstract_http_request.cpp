@@ -116,6 +116,12 @@ bool abstract_http_request::is_busy() const
   return is_working;
 }
 
+void abstract_http_request::enable_redirects_logging()
+{
+  if(net_reply)
+    connect(net_reply, &QNetworkReply::redirected, this, &abstract_http_request::log_redirect);
+}
+
 void abstract_http_request::check_connection()
 {
   conn_state->stop();
@@ -133,4 +139,9 @@ void abstract_http_request::check_connection()
       QTimer::singleShot(0, net_reply, &QNetworkReply::abort);
     }
   }
+}
+
+void abstract_http_request::log_redirect(const QUrl & redir_url)
+{
+  qDebug() << "REDIRECT:" << redir_url.toString() << "<-" << url.toString();
 }

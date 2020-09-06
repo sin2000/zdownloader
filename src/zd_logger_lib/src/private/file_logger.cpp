@@ -36,7 +36,6 @@ QString file_logger::get_filename_from_pattern(int arch_counter, bool alt_name)
   if(fn_pattern.isEmpty())
     fn_pattern = "applog_" + archive_placeholder + ".log";
 
-  QString placeholder_value;
   if(alt_name)
   {
     const QFileInfo fi = QFileInfo(fn_pattern);

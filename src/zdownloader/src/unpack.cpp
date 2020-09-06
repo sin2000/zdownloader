@@ -2,6 +2,7 @@
 #include <meta_object_ext.h>
 #include <string_utils.h>
 #include <zd_logger.h>
+#include <qt_compat.h>
 #include <QDateTime>
 #include <QFile>
 #include <QThread>
@@ -81,7 +82,7 @@ void unpack::load_queue()
   const QString content = QString::fromUtf8(queue_file.readAll());
   queue_file.close();
 
-  const QStringList filenames = content.split(QChar::LineFeed, QString::SkipEmptyParts);
+  const QStringList filenames = content.split(QChar::LineFeed, qt_compat::split_skip_empty_parts);
   for(const auto & fn : filenames)
     unpack_queue.enqueue(fn);
 }
@@ -106,7 +107,7 @@ void unpack::save_queue()
     return;
   }
 
-  for(const auto & item : unpack_queue)
+  for(const auto & item : qAsConst(unpack_queue))
   {
     const QString line = item + "\n";
     queue_file.write(line.toUtf8());
@@ -281,7 +282,7 @@ void unpack::read_std_output()
 {
   const QString content = last_text + QString::fromUtf8(unpack_process->readAllStandardOutput());
   last_text.clear();
-  QStringList lines = content.split('\n', QString::SkipEmptyParts);
+  QStringList lines = content.split('\n', qt_compat::split_skip_empty_parts);
   if(content.endsWith('\n') == false && lines.isEmpty() == false
      && content.endsWith('%') == false)
   {

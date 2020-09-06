@@ -30,7 +30,7 @@ public:
 signals:
   void download_started(file_downloader2 * sender);
   void download_success(file_downloader2 * sender);
-  void download_error(file_downloader2 * sender, const QString & error_text);
+  void download_error(file_downloader2 * sender, const QString & error_text, QNetworkReply::NetworkError error_code);
 
 private:
   void download() final;
