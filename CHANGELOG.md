@@ -1,4 +1,11 @@
 # Changelog
+### Changes in v2.2 (2020-09-06):
+- added: more universal zippyshare link extraction
+- fixed: skipping non existing files faster
+- added: skipping files with not found http status(404)
+- hide Qt warning: 'QNetworkReplyImplPrivate::error:Internal problem, this method must only be called once'
+- minor code optimize
+
 ### Changes in v2.1 (2020-08-21):
 - fix for zippyshare
 - updated precompiled Qt libraries to 5.15
