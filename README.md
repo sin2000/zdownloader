@@ -50,10 +50,10 @@ I have attached precompiled Botan library in lib directory (https://botan.random
 - for unpack 7z, zip files: 7z >= 16.02
 
 #### Windows
-- you probably need Visual C++ 2017 redistributables x64: https://aka.ms/vs/16/release/vc_redist.x64.exe
+- you probably need Visual C++ 2017 redistributables: x64 - https://aka.ms/vs/16/release/vc_redist.x64.exe or x86 - https://aka.ms/vs/16/release/vc_redist.x86.exe
 - I have attached precompiled Qt libs in win7_8_10-x64 directory. License: GNU LGPL version 3, Qt source code: https://code.qt.io.
 - I have attached precompiled OpenSSL libs in win7_8_10-x64 directory - https://www.openssl.org
-- for unpack rar files: WinRar >= 5.50 - https://www.rarlab.com/download.htm
+- for unpack rar files: WinRar or Unrar >= 5.50 - https://www.rarlab.com/download.htm
 - for unpack 7z, zip files: 7-zip >= 16.02 - https://www.7-zip.org/download.html
 
 ## Build instructions
