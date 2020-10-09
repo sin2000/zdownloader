@@ -13,6 +13,7 @@ public:
   bool delete_archive_files_after_unpack = true;
   QString unrar_binary;
   QString seven_zip_binary;
+  bool use_7z_to_unpack_rar_files = false;
   QStringList passwords;
   bool unpack_passwords_size_error = false;
 };

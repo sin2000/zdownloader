@@ -199,7 +199,11 @@ bool unpack::setup_unpack_process(const QString & filename)
     curr_generic_archive_filename = archive_filepath;
     archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
-    set_unrar_program(QStringList{"x", "-p" + archive_pwd, "-ai", "-y", "-c-", "-o+", archive_filepath, archive_dir + "/"});
+    if(unpack_prefs.use_7z_to_unpack_rar_files)
+      set_unpack_app(seven_zip_unpacker, archive_pwd, archive_dir, archive_filepath);
+    else
+      set_unpack_app(rar_unpacker, archive_pwd, archive_dir, archive_filepath);
+
     return true;
   }
 
@@ -222,11 +226,19 @@ bool unpack::setup_unpack_process(const QString & filename)
     curr_generic_archive_filename = archive_filepath;
     archive_filepath = working_dir + "/" + archive_filepath;
     archive_dir = working_dir + "/" + archive_dir;
-    set_7z_program(QStringList{"x", "-p" + archive_pwd, "-aoa", "-y", "-o"+ archive_dir + "/", archive_filepath});
+    set_unpack_app(seven_zip_unpacker, archive_pwd, archive_dir, archive_filepath);
     return true;
   }
 
   return false;
+}
+
+void unpack::set_unpack_app(unpack::unpack_program app, const QString & archive_passwd, const QString & archive_dir, const QString & archive_filepath)
+{
+  if(app == rar_unpacker)
+    set_unrar_program(QStringList{"x", "-p" + archive_passwd, "-ai", "-y", "-c-", "-o+", archive_filepath, archive_dir + "/"});
+  else
+    set_7z_program(QStringList{"x", "-p" + archive_passwd, "-aoa", "-y", "-o"+ archive_dir + "/", archive_filepath});
 }
 
 void unpack::set_unrar_program(const QStringList & prog_args)

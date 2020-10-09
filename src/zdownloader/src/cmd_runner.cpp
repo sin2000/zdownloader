@@ -205,7 +205,8 @@ bool cmd_runner::apply_settings()
            << "\n" << "pause_download_before_unpack:" << app_set->unpack.pause_download_before_unpack
            << "\n" << "delete_archive_files_after_unpack:" << app_set->unpack.delete_archive_files_after_unpack
            << "\n" << "unrar_binary:" << app_set->unpack.unrar_binary
-           << "\n" << "7z_binary:" << app_set->unpack.seven_zip_binary;
+           << "\n" << "7z_binary:" << app_set->unpack.seven_zip_binary
+           << "\n" << "use_7z_to_unpack_rar_files:" << app_set->unpack.use_7z_to_unpack_rar_files;
 
   const QString unpack_pwds_val_msg = app_set->unpack.validate();
   if(unpack_pwds_val_msg.isEmpty() == false)

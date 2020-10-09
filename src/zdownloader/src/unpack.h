@@ -48,6 +48,7 @@ private:
 
   void save_queue();
   bool setup_unpack_process(const QString & filename);
+  void set_unpack_app(unpack::unpack_program app, const QString & archive_passwd, const QString & archive_dir, const QString & archive_filepath);
   void set_unrar_program(const QStringList & prog_args);
   void set_7z_program(const QStringList & prog_args);
   void start_unpack_process();

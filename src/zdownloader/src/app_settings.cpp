@@ -96,6 +96,7 @@ void app_settings::load_unpack_settings(QSettings * s)
   unpack.delete_archive_files_after_unpack = s->value("delete_archive_files_after_unpack").toBool();
   unpack.unrar_binary = s->value("unrar_binary").toString();
   unpack.seven_zip_binary = s->value("7z_binary").toString();
+  unpack.use_7z_to_unpack_rar_files = s->value("use_7z_to_unpack_rar_files").toBool();
   s->endGroup();
 
   unpack.passwords.clear();
